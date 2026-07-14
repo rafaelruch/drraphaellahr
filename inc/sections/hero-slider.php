@@ -59,10 +59,10 @@ function lahr_hero_slide_html( $slide, $eager ) {
 }
 
 function lahr_section_hero_slider( $sec ) {
-	$p        = $sec['key'];
-	$slides   = (array) lahr_field( "{$p}_slides", array() );
-	$autoplay = (bool) lahr_field( "{$p}_autoplay", 0 );
-	$interval = (int) lahr_field( "{$p}_intervalo", 6 );
+	// Slides vêm do módulo "Banners (Hero)" (CPT lahr_banner).
+	$slides   = function_exists( 'lahr_get_banners' ) ? lahr_get_banners() : array();
+	$autoplay = (bool) lahr_opt( 'hero_autoplay', 1 );
+	$interval = (int) lahr_opt( 'hero_intervalo', 6 );
 	$count    = count( $slides );
 
 	if ( 0 === $count ) {

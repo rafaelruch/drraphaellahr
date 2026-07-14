@@ -195,6 +195,17 @@ add_action(
 						),
 					),
 					lahr_f_text( 'field_lahr_cfg_wa_privacidade', 'wa_privacidade', 'Nota de privacidade', 'Atendimento sigiloso. Não pedimos fotos nem documentos.' ),
+
+					// ---------- HERO (SLIDER) ----------
+					lahr_f_tab( 'cfg_tab_hero', 'Hero (slider)' ),
+					array(
+						'key'          => 'field_lahr_cfg_hero_msg',
+						'label'        => 'Banners da Hero',
+						'type'         => 'message',
+						'message'      => 'As imagens/vídeos e textos dos banners são editados no menu <strong>“Banners (Hero)”</strong>. Aqui você controla só o comportamento do slider.',
+					),
+					lahr_f_true_false( 'field_lahr_cfg_hero_autoplay', 'hero_autoplay', 'Passar sozinho (autoplay)?', 1 ),
+					lahr_f_number( 'field_lahr_cfg_hero_intervalo', 'hero_intervalo', 'Intervalo do autoplay (segundos)', 6 ),
 				),
 			)
 		);

@@ -30,8 +30,9 @@ add_action(
 		if ( ! function_exists( 'acf_add_local_field_group' ) ) {
 			return;
 		}
+		// Hero: os banners são gerenciados no menu "Banners (Hero)" (CPT lahr_banner),
+		// não neste grupo. Aqui ficam as demais seções da Home.
 		$fields = array();
-		$fields = array_merge( $fields, lahr_fields_hero_slider( 'hero', 'Hero (slider)' ) );
 		$fields = array_merge( $fields, lahr_fields_marquee( 'marquee', 'Faixa deslizante' ) );
 		$fields = array_merge( $fields, lahr_fields_cards( 'pilares', 'Pilares (diferencial)' ) );
 		$fields = array_merge( $fields, lahr_fields_about( 'about', 'Sobre o médico' ) );
