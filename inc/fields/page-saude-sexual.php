@@ -37,7 +37,7 @@ add_action(
 			array(
 				'key'             => 'group_lahr_page_saude_sexual',
 				'title'           => 'Conteúdo — Saúde Sexual Masculina',
-				'fields'          => $f,
+				'fields'          => lahr_ns_keys( $f, 'saudesexual' ),
 				'location'        => array( array( array( 'param' => 'post', 'operator' => '==', 'value' => 10 ) ) ),
 				'menu_order'      => 0,
 				'position'        => 'normal',

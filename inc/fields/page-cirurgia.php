@@ -43,7 +43,7 @@ add_action(
 			array(
 				'key'             => 'group_lahr_page_cirurgia',
 				'title'           => 'Conteúdo — Cirurgia Robótica',
-				'fields'          => $f,
+				'fields'          => lahr_ns_keys( $f, 'cirurgia' ),
 				'location'        => array( array( array( 'param' => 'post', 'operator' => '==', 'value' => 8 ) ) ),
 				'menu_order'      => 0,
 				'position'        => 'normal',

@@ -10,6 +10,35 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/**
+ * Torna todas as CHAVES de um conjunto de campos únicas por namespace (página),
+ * recursivamente (sub_fields). Os NOMES (name) permanecem intactos — por isso os
+ * valores já gravados continuam sendo lidos normalmente. Evita colisão de chaves
+ * ACF entre grupos que compartilham prefixos (ex.: 'hero', 'cta').
+ *
+ * @param array  $fields Campos ACF.
+ * @param string $ns     Namespace único da página (ex.: 'home').
+ * @return array
+ */
+function lahr_ns_keys( $fields, $ns ) {
+	if ( ! is_array( $fields ) ) {
+		return $fields;
+	}
+	foreach ( $fields as &$f ) {
+		if ( isset( $f['key'] ) ) {
+			$f['key'] = 'field_' . $ns . '_' . preg_replace( '/^field_/', '', $f['key'] );
+		}
+		if ( ! empty( $f['collapsed'] ) ) {
+			$f['collapsed'] = 'field_' . $ns . '_' . preg_replace( '/^field_/', '', $f['collapsed'] );
+		}
+		if ( isset( $f['sub_fields'] ) && is_array( $f['sub_fields'] ) ) {
+			$f['sub_fields'] = lahr_ns_keys( $f['sub_fields'], $ns );
+		}
+	}
+	unset( $f );
+	return $fields;
+}
+
 /* =========================================================================
  * Builders genéricos
  * ====================================================================== */

@@ -31,7 +31,7 @@ add_action(
 			array(
 				'key'             => 'group_lahr_page_agendar',
 				'title'           => 'Conteúdo — Agendar Consulta',
-				'fields'          => $f,
+				'fields'          => lahr_ns_keys( $f, 'agendar' ),
 				'location'        => array( array( array( 'param' => 'post', 'operator' => '==', 'value' => 13 ) ) ),
 				'menu_order'      => 0,
 				'position'        => 'normal',

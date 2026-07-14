@@ -49,7 +49,7 @@ add_action(
 			array(
 				'key'             => 'group_lahr_page_harmonizacao',
 				'title'           => 'Conteúdo — Harmonização Peniana',
-				'fields'          => $f,
+				'fields'          => lahr_ns_keys( $f, 'harmonizacao' ),
 				'location'        => array( array( array( 'param' => 'post', 'operator' => '==', 'value' => 6 ) ) ),
 				'menu_order'      => 0,
 				'position'        => 'normal',

@@ -45,7 +45,7 @@ add_action(
 			array(
 				'key'            => 'group_lahr_page_home',
 				'title'          => 'Conteúdo da Home',
-				'fields'         => $fields,
+				'fields'         => lahr_ns_keys( $fields, 'home' ),
 				'location'       => array(
 					array(
 						array(

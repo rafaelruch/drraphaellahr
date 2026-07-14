@@ -33,7 +33,7 @@ add_action(
 			array(
 				'key'             => 'group_lahr_page_planejamento',
 				'title'           => 'Conteúdo — Planejamento Familiar',
-				'fields'          => $f,
+				'fields'          => lahr_ns_keys( $f, 'planejamento' ),
 				'location'        => array( array( array( 'param' => 'post', 'operator' => '==', 'value' => 11 ) ) ),
 				'menu_order'      => 0,
 				'position'        => 'normal',

@@ -35,7 +35,7 @@ add_action(
 			array(
 				'key'             => 'group_lahr_page_estetica',
 				'title'           => 'Conteúdo — Estética Masculina',
-				'fields'          => $f,
+				'fields'          => lahr_ns_keys( $f, 'estetica' ),
 				'location'        => array( array( array( 'param' => 'post', 'operator' => '==', 'value' => 9 ) ) ),
 				'menu_order'      => 0,
 				'position'        => 'normal',

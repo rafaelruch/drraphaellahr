@@ -43,7 +43,7 @@ add_action(
 			array(
 				'key'             => 'group_lahr_page_protese',
 				'title'           => 'Conteúdo — Prótese Peniana',
-				'fields'          => $f,
+				'fields'          => lahr_ns_keys( $f, 'protese' ),
 				'location'        => array( array( array( 'param' => 'post', 'operator' => '==', 'value' => 7 ) ) ),
 				'menu_order'      => 0,
 				'position'        => 'normal',

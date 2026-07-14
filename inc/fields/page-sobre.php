@@ -43,7 +43,7 @@ add_action(
 			array(
 				'key'             => 'group_lahr_page_sobre',
 				'title'           => 'Conteúdo — Sobre o Dr. Raphael',
-				'fields'          => $f,
+				'fields'          => lahr_ns_keys( $f, 'sobre' ),
 				'location'        => array( array( array( 'param' => 'post', 'operator' => '==', 'value' => 12 ) ) ),
 				'menu_order'      => 0,
 				'position'        => 'normal',

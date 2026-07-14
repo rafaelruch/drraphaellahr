@@ -41,7 +41,7 @@ add_action(
 			array(
 				'key'             => 'group_lahr_page_privacidade',
 				'title'           => 'Conteúdo — Política de Privacidade',
-				'fields'          => $build(),
+				'fields'          => lahr_ns_keys( $build(), 'privacidade' ),
 				'location'        => array( array( array( 'param' => 'post', 'operator' => '==', 'value' => 15 ) ) ),
 				'position'        => 'normal',
 				'style'           => 'default',
@@ -54,7 +54,7 @@ add_action(
 			array(
 				'key'             => 'group_lahr_page_termos',
 				'title'           => 'Conteúdo — Termos de Uso',
-				'fields'          => $build(),
+				'fields'          => lahr_ns_keys( $build(), 'termos' ),
 				'location'        => array( array( array( 'param' => 'post', 'operator' => '==', 'value' => 16 ) ) ),
 				'position'        => 'normal',
 				'style'           => 'default',

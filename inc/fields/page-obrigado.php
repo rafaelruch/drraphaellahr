@@ -29,7 +29,7 @@ add_action(
 			array(
 				'key'             => 'group_lahr_page_obrigado',
 				'title'           => 'Conteúdo — Obrigado',
-				'fields'          => $f,
+				'fields'          => lahr_ns_keys( $f, 'obrigado' ),
 				'location'        => array( array( array( 'param' => 'post', 'operator' => '==', 'value' => 14 ) ) ),
 				'menu_order'      => 0,
 				'position'        => 'normal',
