@@ -1,0 +1,75 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/theme.json",
+    "version": 3,
+    "settings": {
+        "appearanceTools": true,
+        "useRootPaddingAwareAlignments": true,
+        "layout": {
+            "contentSize": "720px",
+            "wideSize": "1100px"
+        },
+        "color": {
+            "palette": [
+                {"slug": "paper",       "color": "#fafaf7", "name": "Papel"},
+                {"slug": "paper-warm",  "color": "#f4f0e6", "name": "Papel Quente"},
+                {"slug": "ink",         "color": "#0a0a0a", "name": "Tinta"},
+                {"slug": "ink-soft",    "color": "#1a1a18", "name": "Tinta Suave"},
+                {"slug": "gray-deep",   "color": "#2a2620", "name": "Cinza Profundo"},
+                {"slug": "gray",        "color": "#5a554c", "name": "Cinza"},
+                {"slug": "gray-light",  "color": "#c4bfb0", "name": "Cinza Claro"},
+                {"slug": "hinomaru",    "color": "#a01818", "name": "Hinomaru"},
+                {"slug": "gold",        "color": "#9e7d3a", "name": "Ouro Discreto"},
+                {"slug": "gold-soft",   "color": "#c4a76b", "name": "Ouro Suave"}
+            ],
+            "custom": true,
+            "defaultPalette": false
+        },
+        "typography": {
+            "fontFamilies": [
+                {
+                    "slug": "serif",
+                    "name": "Cormorant Garamond",
+                    "fontFamily": "'Cormorant Garamond', Georgia, serif",
+                    "fontFace": [
+                        {
+                            "fontFamily": "Cormorant Garamond",
+                            "fontStyle": "normal",
+                            "fontWeight": "300 700",
+                            "src": ["https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&display=swap"]
+                        }
+                    ]
+                },
+                {
+                    "slug": "sans",
+                    "name": "Inter",
+                    "fontFamily": "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+                    "fontFace": [
+                        {
+                            "fontFamily": "Inter",
+                            "fontStyle": "normal",
+                            "fontWeight": "300 700",
+                            "src": ["https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"]
+                        }
+                    ]
+                }
+            ],
+            "fluid": true
+        },
+        "spacing": { "padding": true, "margin": true, "blockGap": true }
+    },
+    "styles": {
+        "color": {
+            "background": "var(--wp--preset--color--paper)",
+            "text": "var(--wp--preset--color--ink)"
+        },
+        "typography": {
+            "fontFamily": "var(--wp--preset--font-family--sans)",
+            "fontSize": "16px",
+            "lineHeight": "1.7"
+        }
+    },
+    "templateParts": [
+        {"name": "header", "title": "Cabeçalho", "area": "header"},
+        {"name": "footer", "title": "Rodapé",    "area": "footer"}
+    ]
+}
