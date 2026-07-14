@@ -459,12 +459,33 @@
             var waNum = (window.LAHR && window.LAHR.waNumber) || '5547999701100';
             var url = 'https://wa.me/' + waNum + '?text=' + encodeURIComponent(msg);
             if (window.dataLayer) window.dataLayer.push({ event: 'generate_lead', lead_source: 'whatsapp_widget', area_interesse: interesse || 'nao_informado' });
+
+            // Persistir lead no site + e-mails (mesmo endpoint do /agendar)
+            if (window.LAHR && window.LAHR.ajaxUrl) {
+                var fd = new FormData();
+                fd.append('action', 'lahr_lead');
+                fd.append('_nonce', window.LAHR.leadNonce || '');
+                fd.append('origem_form', 'widget');
+                fd.append('nome', nome);
+                fd.append('whatsapp', telefone);
+                fd.append('interesse', interesse);
+                try {
+                    fetch(window.LAHR.ajaxUrl, { method: 'POST', body: fd, keepalive: true, credentials: 'same-origin' });
+                } catch (err) {}
+            }
+
             window.open(url, '_blank', 'noopener');
-            var submitBtn = waForm.querySelector('.lm-wa__submit');
-            var original  = submitBtn.innerHTML;
-            submitBtn.innerHTML = '✓ Redirecionando...';
-            submitBtn.disabled = true;
-            setTimeout(function () { waForm.reset(); submitBtn.innerHTML = original; submitBtn.disabled = false; close(); }, 2000);
+
+            // Confirmação clara e persistente de que os dados foram enviados
+            var waBody = waWidget.querySelector('.lm-wa__body');
+            if (waBody) {
+                waForm.style.display = 'none';
+                var okBubble = document.createElement('div');
+                okBubble.className = 'lm-wa__bubble';
+                okBubble.setAttribute('role', 'status');
+                okBubble.innerHTML = '<p><strong>Dados enviados.</strong> Recebemos seu contato e retornamos pelo WhatsApp em até <strong>24h</strong>, de forma discreta.</p><span class="lm-wa__time">agora</span>';
+                waBody.appendChild(okBubble);
+            }
         });
     }
 })();
