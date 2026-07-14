@@ -14,6 +14,7 @@ function lahr_section_sharp_cta( $sec ) {
 	$lede   = lahr_field( "{$p}_lede" );
 	$label  = lahr_field( "{$p}_cta_label" );
 	$url    = lahr_field( "{$p}_cta_url", '/agendar/' );
+	$estilo = lahr_field( "{$p}_cta_estilo", 'gold' );
 
 	$html  = lahr_section_open( $sec, 'cn-section' );
 	$html .= '<div class="cn-container"><div class="cn-sharp-cta">';
@@ -22,7 +23,7 @@ function lahr_section_sharp_cta( $sec ) {
 		$html .= '<p class="cn-sharp-cta__lede">' . lahr_rich( $lede ) . '</p>';
 	}
 	if ( '' !== $label ) {
-		$html .= lahr_btn_html( $label, $url, 'gold' );
+		$html .= lahr_btn_html( $label, $url, $estilo, ( 'ghost' === $estilo ) );
 	}
 	$html .= '</div></div></section>';
 	return $html;

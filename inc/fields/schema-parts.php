@@ -279,8 +279,9 @@ function lahr_fields_cards( $p, $label = 'Cartões' ) {
 			lahr_f_text( "field_lahr_{$p}_c_num", 'num', 'Número/índice (ex.: 01, i)' ),
 			lahr_f_text( "field_lahr_{$p}_c_titulo", 'titulo', 'Título' ),
 			lahr_f_textarea( "field_lahr_{$p}_c_desc", 'desc', 'Descrição' ),
-			lahr_f_text( "field_lahr_{$p}_c_url", 'url', 'Link (opcional)' ),
-			lahr_f_text( "field_lahr_{$p}_c_cta", 'cta_label', 'Texto do link (opcional)' ),
+			lahr_f_text( "field_lahr_{$p}_c_url", 'url', 'Link do cartão inteiro (opcional)' ),
+			lahr_f_text( "field_lahr_{$p}_c_cta", 'cta_label', 'Texto do CTA (opcional)' ),
+			lahr_f_text( "field_lahr_{$p}_c_cta_url", 'cta_url', 'Link do CTA interno (opcional)' ),
 		),
 	);
 	return $s;
@@ -367,6 +368,47 @@ function lahr_fields_judo( $p, $label = 'Judô / Filosofia' ) {
 			),
 		),
 	);
+}
+
+/** JUDÔ (versão filosofia — página Sobre). */
+function lahr_fields_judo_about( $p, $label = 'Judô / Filosofia' ) {
+	return array(
+		lahr_f_accordion( "acc_{$p}", $label, 0 ),
+		lahr_f_text( "field_lahr_{$p}_caption", "{$p}_caption", 'Legenda (caption)' ),
+		lahr_f_rich( "field_lahr_{$p}_quote", "{$p}_quote", 'Citação' ),
+		lahr_f_text( "field_lahr_{$p}_author", "{$p}_author", 'Autor' ),
+		array(
+			'key'          => "field_lahr_{$p}_princ",
+			'label'        => 'Princípios',
+			'name'         => "{$p}_princ",
+			'type'         => 'repeater',
+			'layout'       => 'block',
+			'button_label' => 'Adicionar princípio',
+			'sub_fields'   => array(
+				lahr_f_text( "field_lahr_{$p}_pr_k", 'kanji', 'Kanji' ),
+				lahr_f_textarea( "field_lahr_{$p}_pr_t", 'texto', 'Texto' ),
+			),
+		),
+	);
+}
+
+/** GALLERY (grade de imagens com cabeçalho). */
+function lahr_fields_gallery( $p, $label = 'Galeria de imagens' ) {
+	$s = array( lahr_f_accordion( "acc_{$p}", $label, 0 ) );
+	$s = array_merge( $s, lahr_sub_sechead( $p ) );
+	$s[] = array(
+		'key'          => "field_lahr_{$p}_imgs",
+		'label'        => 'Imagens',
+		'name'         => "{$p}_imgs",
+		'type'         => 'repeater',
+		'layout'       => 'table',
+		'button_label' => 'Adicionar imagem',
+		'sub_fields'   => array(
+			lahr_f_image( "field_lahr_{$p}_img", 'imagem', 'Imagem' ),
+			lahr_f_text( "field_lahr_{$p}_img_alt", 'alt', 'Descrição (alt)' ),
+		),
+	);
+	return $s;
 }
 
 /** QUOTE (citação de destaque). */
@@ -485,6 +527,7 @@ function lahr_fields_sharp_cta( $p, $label = 'CTA (investimento)' ) {
 		lahr_f_textarea( "field_lahr_{$p}_lede", "{$p}_lede", 'Texto' ),
 		lahr_f_text( "field_lahr_{$p}_cta_label", "{$p}_cta_label", 'Texto do botão' ),
 		lahr_f_text( "field_lahr_{$p}_cta_url", "{$p}_cta_url", 'URL do botão' ),
+		lahr_f_select( "field_lahr_{$p}_cta_estilo", "{$p}_cta_estilo", 'Estilo do botão', array( 'gold' => 'Dourado', 'ghost' => 'Contorno' ), 'gold' ),
 	);
 }
 
@@ -505,6 +548,25 @@ function lahr_fields_faq( $p, $label = 'FAQ' ) {
 		),
 	);
 	return $s;
+}
+
+/** AGENDAR-FORM — painel lateral editável + formulário fixo. */
+function lahr_fields_agendar_form( $p, $label = 'Formulário de agendamento' ) {
+	return array(
+		lahr_f_accordion( "acc_{$p}", $label, 0 ),
+		lahr_f_text( "field_lahr_{$p}_eyebrow", "{$p}_eyebrow", 'Eyebrow' ),
+		lahr_f_rich( "field_lahr_{$p}_titulo", "{$p}_titulo", 'Título' ),
+		lahr_f_textarea( "field_lahr_{$p}_intro", "{$p}_intro", 'Texto introdutório' ),
+		array(
+			'key'          => "field_lahr_{$p}_trust",
+			'label'        => 'Lista de compromissos',
+			'name'         => "{$p}_trust",
+			'type'         => 'repeater',
+			'layout'       => 'table',
+			'button_label' => 'Adicionar item',
+			'sub_fields'   => array( lahr_f_text( "field_lahr_{$p}_trust_it", 'texto', 'Item' ) ),
+		),
+	);
 }
 
 /** CTA final. */
