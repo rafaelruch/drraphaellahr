@@ -89,9 +89,11 @@ function lahr_section_hero_slider( $sec ) {
 	$html .= '</div>';
 
 	if ( $count > 1 ) {
+		$svg_prev = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>';
+		$svg_next = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>';
 		$html .= '<div class="cn-hero__arrows" aria-hidden="false">';
-		$html .= '<button type="button" class="cn-hero__arrow cn-hero__arrow--prev" aria-label="Slide anterior" data-lahr-prev>‹</button>';
-		$html .= '<button type="button" class="cn-hero__arrow cn-hero__arrow--next" aria-label="Próximo slide" data-lahr-next>›</button>';
+		$html .= '<button type="button" class="cn-hero__arrow cn-hero__arrow--prev" aria-label="Slide anterior" data-lahr-prev>' . $svg_prev . '</button>';
+		$html .= '<button type="button" class="cn-hero__arrow cn-hero__arrow--next" aria-label="Próximo slide" data-lahr-next>' . $svg_next . '</button>';
 		$html .= '</div>';
 		$html .= '<div class="cn-hero__dots" role="tablist" aria-label="Slides">';
 		for ( $i = 0; $i < $count; $i++ ) {
