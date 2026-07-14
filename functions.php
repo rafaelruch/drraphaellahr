@@ -38,6 +38,18 @@ add_action( 'wp_enqueue_scripts', function () {
             'thanksUrl' => home_url( '/obrigado/' ),
         )
     );
+
+    // Hero slider: enfileira apenas onde há uma seção hero_slider registrada.
+    if ( is_page() ) {
+        $slug = get_post_field( 'post_name', get_queried_object_id() );
+        $secs = isset( $GLOBALS['lahr_page_sections'][ $slug ] ) ? $GLOBALS['lahr_page_sections'][ $slug ] : array();
+        foreach ( $secs as $s ) {
+            if ( isset( $s['type'] ) && 'hero_slider' === $s['type'] ) {
+                wp_enqueue_script( 'lahr-hero-slider', get_theme_file_uri( '/assets/js/hero-slider.js' ), array(), $theme->get( 'Version' ), true );
+                break;
+            }
+        }
+    }
 } );
 
 /**
