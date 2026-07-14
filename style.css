@@ -2464,3 +2464,11 @@ body.admin-bar .cn-header { top: 32px; }
 @media (prefers-reduced-motion: reduce) {
     .cn-hero__track { transition: none; }
 }
+
+/* Descrição opcional em colunas de comparação (Lahr) */
+.cn-compare__desc {
+    color: var(--c-text-muted);
+    font-size: var(--t-sm);
+    margin: 0 0 var(--s-3);
+    line-height: 1.6;
+}

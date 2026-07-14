@@ -14,9 +14,11 @@ function lahr_section_steps( $sec ) {
 	$lede    = lahr_field( "{$p}_lede" );
 	$itens   = (array) lahr_field( "{$p}_itens", array() );
 
+	$cols_style = ! empty( $sec['cols'] ) ? ' style="grid-template-columns: repeat(' . (int) $sec['cols'] . ', 1fr);"' : '';
+
 	$html  = '<section class="cn-steps">';
 	$html .= '<div class="cn-container">' . lahr_sechead_html( $eyebrow, $titulo, $lede ) . '</div>';
-	$html .= '<ul class="cn-steps__list">';
+	$html .= '<ul class="cn-steps__list"' . $cols_style . '>';
 	foreach ( $itens as $it ) {
 		$num = isset( $it['num'] ) ? $it['num'] : '';
 		$t   = isset( $it['titulo'] ) ? $it['titulo'] : '';

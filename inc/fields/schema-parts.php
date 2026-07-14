@@ -409,33 +409,32 @@ function lahr_fields_steps( $p, $label = 'Etapas' ) {
 	return $s;
 }
 
-/** COMPARE (duas colunas comparativas). */
+/** COMPARE (colunas comparativas flexíveis — 2+ colunas, destaque opcional). */
 function lahr_fields_compare( $p, $label = 'Comparação' ) {
 	$s = array( lahr_f_accordion( "acc_{$p}", $label, 0 ) );
 	$s = array_merge( $s, lahr_sub_sechead( $p ) );
-	// Coluna boa.
-	$s[] = lahr_f_text( "field_lahr_{$p}_good_tag", "{$p}_good_tag", 'Coluna 1 — tag (ex.: Recomendado)' );
-	$s[] = lahr_f_text( "field_lahr_{$p}_good_nome", "{$p}_good_nome", 'Coluna 1 — nome' );
 	$s[] = array(
-		'key'          => "field_lahr_{$p}_good_itens",
-		'label'        => 'Coluna 1 — itens',
-		'name'         => "{$p}_good_itens",
+		'key'          => "field_lahr_{$p}_cols",
+		'label'        => 'Colunas',
+		'name'         => "{$p}_cols",
 		'type'         => 'repeater',
-		'layout'       => 'table',
-		'button_label' => 'Adicionar item',
-		'sub_fields'   => array( lahr_f_text( "field_lahr_{$p}_good_it", 'texto', 'Item' ) ),
-	);
-	// Coluna ruim.
-	$s[] = lahr_f_text( "field_lahr_{$p}_bad_tag", "{$p}_bad_tag", 'Coluna 2 — tag (ex.: Não usamos)' );
-	$s[] = lahr_f_text( "field_lahr_{$p}_bad_nome", "{$p}_bad_nome", 'Coluna 2 — nome' );
-	$s[] = array(
-		'key'          => "field_lahr_{$p}_bad_itens",
-		'label'        => 'Coluna 2 — itens',
-		'name'         => "{$p}_bad_itens",
-		'type'         => 'repeater',
-		'layout'       => 'table',
-		'button_label' => 'Adicionar item',
-		'sub_fields'   => array( lahr_f_text( "field_lahr_{$p}_bad_it", 'texto', 'Item' ) ),
+		'layout'       => 'block',
+		'button_label' => 'Adicionar coluna',
+		'sub_fields'   => array(
+			lahr_f_select( "field_lahr_{$p}_col_hl", 'destaque', 'Destaque', array( 'none' => 'Nenhum', 'good' => 'Positivo (dourado)', 'bad' => 'Negativo' ), 'none' ),
+			lahr_f_text( "field_lahr_{$p}_col_tag", 'tag', 'Tag (ex.: Recomendado)' ),
+			lahr_f_text( "field_lahr_{$p}_col_nome", 'nome', 'Nome' ),
+			lahr_f_textarea( "field_lahr_{$p}_col_desc", 'descricao', 'Descrição (opcional)' ),
+			array(
+				'key'          => "field_lahr_{$p}_col_itens",
+				'label'        => 'Itens',
+				'name'         => 'itens',
+				'type'         => 'repeater',
+				'layout'       => 'table',
+				'button_label' => 'Adicionar item',
+				'sub_fields'   => array( lahr_f_text( "field_lahr_{$p}_col_it", 'texto', 'Item' ) ),
+			),
+		),
 	);
 	return $s;
 }
