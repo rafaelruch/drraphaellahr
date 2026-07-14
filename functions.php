@@ -27,6 +27,17 @@ add_action( 'wp_enqueue_scripts', function () {
     $theme = wp_get_theme();
     wp_enqueue_style( 'lahr-editorial', get_stylesheet_uri(), array(), $theme->get( 'Version' ) );
     wp_enqueue_script( 'lahr-editorial-js', get_theme_file_uri( '/assets/js/main.js' ), array(), $theme->get( 'Version' ), true );
+
+    // Expõe configurações editáveis ao JS (número WhatsApp, página de obrigado).
+    $wa_num = function_exists( 'lahr_opt' ) ? lahr_opt( 'whatsapp_num', '5547999701100' ) : '5547999701100';
+    wp_localize_script(
+        'lahr-editorial-js',
+        'LAHR',
+        array(
+            'waNumber'  => preg_replace( '/\D/', '', (string) $wa_num ),
+            'thanksUrl' => home_url( '/obrigado/' ),
+        )
+    );
 } );
 
 /**
@@ -46,4 +57,5 @@ require_once get_theme_file_path( '/inc/google-reviews.php' );
 require_once get_theme_file_path( '/inc/helpers.php' );
 require_once get_theme_file_path( '/inc/acf-check.php' );
 require_once get_theme_file_path( '/inc/options.php' );
+require_once get_theme_file_path( '/inc/header-footer.php' );
 require_once get_theme_file_path( '/inc/render.php' );

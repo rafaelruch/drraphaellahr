@@ -327,7 +327,8 @@
             if (email) lines.push('E-mail: ' + email);
             if (origem) lines.push('Como me encontrou: ' + origem);
             if (mensagem) lines.push('', 'Mensagem:', mensagem);
-            var url = 'https://wa.me/5547999701100?text=' + encodeURIComponent(lines.join('\n'));
+            var waNum = (window.LAHR && window.LAHR.waNumber) || '5547999701100';
+            var url = 'https://wa.me/' + waNum + '?text=' + encodeURIComponent(lines.join('\n'));
 
             // Tracking
             if (window.dataLayer) {
@@ -443,7 +444,8 @@
             var msg = 'Olá! Meu nome é ' + nome + '.';
             msg += interesse ? ' Gostaria de saber sobre ' + interesse + '.' : ' Gostaria de agendar uma consulta com o Dr. Raphael.';
             msg += '\nMeu WhatsApp: ' + telefone;
-            var url = 'https://wa.me/5547999701100?text=' + encodeURIComponent(msg);
+            var waNum = (window.LAHR && window.LAHR.waNumber) || '5547999701100';
+            var url = 'https://wa.me/' + waNum + '?text=' + encodeURIComponent(msg);
             if (window.dataLayer) window.dataLayer.push({ event: 'generate_lead', lead_source: 'whatsapp_widget', area_interesse: interesse || 'nao_informado' });
             window.open(url, '_blank', 'noopener');
             var submitBtn = waForm.querySelector('.lm-wa__submit');
