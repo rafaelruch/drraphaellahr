@@ -36,6 +36,8 @@ add_action( 'wp_enqueue_scripts', function () {
         array(
             'waNumber'  => preg_replace( '/\D/', '', (string) $wa_num ),
             'thanksUrl' => home_url( '/obrigado/' ),
+            'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
+            'leadNonce' => wp_create_nonce( 'lahr_lead' ),
         )
     );
 
@@ -70,4 +72,5 @@ require_once get_theme_file_path( '/inc/helpers.php' );
 require_once get_theme_file_path( '/inc/acf-check.php' );
 require_once get_theme_file_path( '/inc/options.php' );
 require_once get_theme_file_path( '/inc/header-footer.php' );
+require_once get_theme_file_path( '/inc/leads.php' );
 require_once get_theme_file_path( '/inc/render.php' );

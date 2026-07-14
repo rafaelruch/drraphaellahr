@@ -342,6 +342,18 @@
                 });
             }
 
+            // Persistir lead no site + e-mails (não bloqueia o WhatsApp; keepalive
+            // garante o envio mesmo com o redirect para /obrigado/).
+            if (window.LAHR && window.LAHR.ajaxUrl) {
+                var fd = new FormData(agendForm);
+                fd.append('action', 'lahr_lead');
+                fd.append('_nonce', window.LAHR.leadNonce || '');
+                fd.append('origem_form', 'agendar');
+                try {
+                    fetch(window.LAHR.ajaxUrl, { method: 'POST', body: fd, keepalive: true, credentials: 'same-origin' });
+                } catch (err) {}
+            }
+
             // Open WhatsApp
             window.open(url, '_blank', 'noopener');
 
