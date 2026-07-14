@@ -49,7 +49,10 @@ function lahr_render_sections( $slug ) {
 
 /**
  * Injeta as seções no lugar do conteúdo, apenas em páginas mapeadas.
- * Prioridade 9 para rodar antes de wpautop/shortcodes de terceiros.
+ *
+ * Prioridade 99: roda DEPOIS de wptexturize/wpautop/convert_smilies (que
+ * processam o corpo original — agora vazio) para que o HTML estruturado das
+ * seções seja retornado por último, sem ser mutilado por wpautop.
  */
 add_filter(
 	'the_content',
@@ -63,7 +66,7 @@ add_filter(
 		}
 		return lahr_render_sections( $slug );
 	},
-	9
+	99
 );
 
 /* -------------------------------------------------------------------------
