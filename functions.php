@@ -39,3 +39,11 @@ remove_action( 'wp_print_styles', 'print_emoji_styles' );
  * Google Reviews loader.
  */
 require_once get_theme_file_path( '/inc/google-reviews.php' );
+
+/**
+ * Lahr — editabilidade por campos (ACF).
+ */
+require_once get_theme_file_path( '/inc/helpers.php' );
+require_once get_theme_file_path( '/inc/acf-check.php' );
+require_once get_theme_file_path( '/inc/options.php' );
+require_once get_theme_file_path( '/inc/render.php' );
