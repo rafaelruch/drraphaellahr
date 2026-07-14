@@ -2472,3 +2472,11 @@ body.admin-bar .cn-header { top: 32px; }
     margin: 0 0 var(--s-3);
     line-height: 1.6;
 }
+
+/* Link de crédito da agência no rodapé */
+.cn-footer__bottom a {
+    color: var(--c-gold);
+    text-decoration: none;
+    transition: opacity 0.25s ease;
+}
+.cn-footer__bottom a:hover { opacity: 0.7; }

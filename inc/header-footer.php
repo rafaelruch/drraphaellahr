@@ -144,7 +144,7 @@ function lahr_render_site_footer() {
     </div>
     <div class="cn-footer__bottom">
         <span><?php echo esc_html( $copyright ); ?></span>
-        <span><?php echo esc_html( $assinatura ); ?></span>
+        <span><?php echo wp_kses( $assinatura, array( 'a' => array( 'href' => array(), 'target' => array(), 'rel' => array() ) ) ); ?></span>
     </div>
 </footer>
 
