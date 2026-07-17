@@ -2511,17 +2511,23 @@ body.admin-bar .cn-header { top: 32px; }
 .cn-hero__bg--contain .cn-hero__bg-video,
 .cn-hero__bg--contain .cn-hero__bg-img { object-fit: contain; }
 .cn-hero__bg--cover .cn-hero__bg-video,
-.cn-hero__bg--cover .cn-hero__bg-img { object-fit: cover; }
+.cn-hero__bg--cover .cn-hero__bg-img {
+    object-fit: cover;
+    /* Escurece e dessatura o vídeo p/ virar fundo sóbrio (navy+dourado) e
+       destacar o texto — evita o aspecto "lavado/azulado" do vídeo bruto. */
+    filter: saturate(0.68) brightness(0.68) contrast(1.03);
+}
 
-/* Gradiente para legibilidade do texto à esquerda + base */
+/* Overlay: escurecimento uniforme p/ unificar o vídeo + reforço à esquerda
+   para legibilidade do texto. */
 .cn-hero__scrim {
     position: absolute;
     inset: 0;
     z-index: 1;
     pointer-events: none;
     background:
-        linear-gradient(90deg, rgba(13,22,36,0.94) 0%, rgba(13,22,36,0.75) 28%, rgba(13,22,36,0.30) 52%, rgba(13,22,36,0) 72%),
-        linear-gradient(0deg, rgba(13,22,36,0.55) 0%, rgba(13,22,36,0) 32%);
+        linear-gradient(90deg, rgba(13,22,36,0.90) 0%, rgba(13,22,36,0.68) 34%, rgba(13,22,36,0.42) 62%, rgba(13,22,36,0.34) 100%),
+        linear-gradient(0deg, rgba(13,22,36,0.5) 0%, rgba(13,22,36,0) 42%);
 }
 
 .cn-hero__textwrap {
