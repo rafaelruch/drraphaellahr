@@ -25,8 +25,11 @@ add_action( 'after_setup_theme', function () {
  */
 add_action( 'wp_enqueue_scripts', function () {
     $theme = wp_get_theme();
-    wp_enqueue_style( 'lahr-editorial', get_stylesheet_uri(), array(), $theme->get( 'Version' ) );
-    wp_enqueue_script( 'lahr-editorial-js', get_theme_file_uri( '/assets/js/main.js' ), array(), $theme->get( 'Version' ), true );
+    // Versão = data de modificação do arquivo → cache-bust automático a cada mudança.
+    $css_ver = @filemtime( get_theme_file_path( '/style.css' ) ) ?: $theme->get( 'Version' );
+    $js_ver  = @filemtime( get_theme_file_path( '/assets/js/main.js' ) ) ?: $theme->get( 'Version' );
+    wp_enqueue_style( 'lahr-editorial', get_stylesheet_uri(), array(), $css_ver );
+    wp_enqueue_script( 'lahr-editorial-js', get_theme_file_uri( '/assets/js/main.js' ), array(), $js_ver, true );
 
     // Expõe configurações editáveis ao JS (número WhatsApp, página de obrigado).
     $wa_num = function_exists( 'lahr_opt' ) ? lahr_opt( 'whatsapp_num', '5547999701100' ) : '5547999701100';
@@ -47,7 +50,8 @@ add_action( 'wp_enqueue_scripts', function () {
         $secs = isset( $GLOBALS['lahr_page_sections'][ $slug ] ) ? $GLOBALS['lahr_page_sections'][ $slug ] : array();
         foreach ( $secs as $s ) {
             if ( isset( $s['type'] ) && 'hero_slider' === $s['type'] ) {
-                wp_enqueue_script( 'lahr-hero-slider', get_theme_file_uri( '/assets/js/hero-slider.js' ), array(), $theme->get( 'Version' ), true );
+                $hs_ver = @filemtime( get_theme_file_path( '/assets/js/hero-slider.js' ) ) ?: $theme->get( 'Version' );
+                wp_enqueue_script( 'lahr-hero-slider', get_theme_file_uri( '/assets/js/hero-slider.js' ), array(), $hs_ver, true );
                 break;
             }
         }
