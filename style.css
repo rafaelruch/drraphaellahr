@@ -2562,28 +2562,30 @@ body.admin-bar .cn-header { top: 32px; }
     .cn-hero--video .cn-hero__ctas .cn-btn { width: 100%; justify-content: center; }
 }
 
-/* Hero em vídeo — MOBILE: empilha (vídeo inteiro no topo, texto embaixo) */
+/* Hero em vídeo — MOBILE.
+   Modo "inteiro" (contain): empilha (vídeo no topo, texto embaixo) p/ evitar
+   as bordas. Modo "preencher" (cover): full-bleed, texto por cima. */
 @media (max-width: 768px) {
-    .cn-hero--video {
+    .cn-hero--video.cn-hero--contain {
         min-height: 0;
         display: flex;
         flex-direction: column;
     }
-    .cn-hero--video .cn-hero__bg {
+    .cn-hero--video.cn-hero--contain .cn-hero__bg {
         position: relative;
         inset: auto;
         width: 100%;
         aspect-ratio: 16 / 9;
         flex: 0 0 auto;
     }
-    .cn-hero--video .cn-hero__scrim { display: none; }
-    .cn-hero--video .cn-hero__textwrap {
+    .cn-hero--video.cn-hero--contain .cn-hero__scrim { display: none; }
+    .cn-hero--video.cn-hero--contain .cn-hero__textwrap {
         position: relative;
         inset: auto;
         flex: 1 1 auto;
         padding: 44px 0 72px;
     }
-    .cn-hero--video .cn-hero__text {
+    .cn-hero--video.cn-hero--contain .cn-hero__text {
         padding-top: 0;
         padding-bottom: 0;
         justify-content: flex-start;

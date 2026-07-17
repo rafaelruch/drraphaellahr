@@ -43,6 +43,27 @@ function lahr_opt( $name, $default = '' ) {
 }
 
 /**
+ * Valor booleano de configuração global (campos Verdadeiro/Falso).
+ * Diferente de lahr_opt(): trata 0/false como valor legítimo — só cai no
+ * padrão quando o campo nunca foi salvo (null).
+ *
+ * @param string $name    Nome do campo.
+ * @param bool   $default Padrão quando não salvo.
+ * @return bool
+ */
+function lahr_opt_bool( $name, $default = false ) {
+	if ( ! function_exists( 'get_field' ) || ! function_exists( 'lahr_config_id' ) ) {
+		return (bool) $default;
+	}
+	$id = lahr_config_id();
+	if ( ! $id ) {
+		return (bool) $default;
+	}
+	$v = get_field( $name, $id );
+	return ( null === $v ) ? (bool) $default : (bool) $v;
+}
+
+/**
  * Sanitiza texto permitindo apenas ênfases inline usadas no design.
  * (itálico dourado, negrito, quebra de linha, span com classe)
  *

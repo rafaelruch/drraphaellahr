@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /** Fundo fixo da hero (vídeo ou foto), a partir das Configurações. */
 function lahr_hero_bg_html() {
 	$tipo    = lahr_opt( 'hero_bg_tipo', 'video' );
-	$contain = (bool) lahr_opt( 'hero_bg_contain', 1 );
+	$contain = lahr_opt_bool( 'hero_bg_contain', true );
 	$cls     = 'cn-hero__bg ' . ( $contain ? 'cn-hero__bg--contain' : 'cn-hero__bg--cover' );
 
 	if ( 'foto' === $tipo ) {
@@ -80,7 +80,7 @@ function lahr_hero_text_slide_html( $slide ) {
 
 function lahr_section_hero_slider( $sec ) {
 	$slides   = function_exists( 'lahr_get_banners' ) ? lahr_get_banners() : array();
-	$autoplay = (bool) lahr_opt( 'hero_autoplay', 1 );
+	$autoplay = lahr_opt_bool( 'hero_autoplay', true );
 	$interval = (int) lahr_opt( 'hero_intervalo', 6 );
 	$count    = count( $slides );
 
@@ -96,7 +96,9 @@ function lahr_section_hero_slider( $sec ) {
 		}
 	}
 
-	$html  = '<section class="cn-hero cn-hero--video' . ( $count > 1 ? ' cn-hero--slider' : '' ) . '"' . $atts . '>';
+	$fit_class = lahr_opt_bool( 'hero_bg_contain', true ) ? ' cn-hero--contain' : ' cn-hero--cover';
+
+	$html  = '<section class="cn-hero cn-hero--video' . $fit_class . ( $count > 1 ? ' cn-hero--slider' : '' ) . '"' . $atts . '>';
 	$html .= lahr_hero_bg_html();
 	$html .= '<div class="cn-hero__scrim" aria-hidden="true"></div>';
 
