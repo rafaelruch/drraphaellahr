@@ -1,26 +1,62 @@
 <?php
 /**
- * Seção HERO SLIDER (Home) — repetidor de slides foto/vídeo.
- * 1 slide → renderiza estático (idêntico ao hero original), sem controles/JS.
+ * Seção HERO — fundo fixo (vídeo/foto, mídia única editável nas Configurações)
+ * com os TEXTOS passando por cima como slides (banners do CPT lahr_banner).
+ *
+ * O fundo é mostrado por inteiro (object-fit: contain) por padrão; apenas os
+ * textos rotacionam. 1 texto → estático (sem controles).
  *
  * @package Lahr_Editorial
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-function lahr_hero_slide_html( $slide, $eager ) {
-	$tipo    = isset( $slide['tipo_midia'] ) ? $slide['tipo_midia'] : 'foto';
-	$img     = isset( $slide['imagem'] ) ? $slide['imagem'] : '';
-	$video   = isset( $slide['video'] ) ? $slide['video'] : '';
-	$poster  = isset( $slide['poster'] ) ? $slide['poster'] : '';
+/** Fundo fixo da hero (vídeo ou foto), a partir das Configurações. */
+function lahr_hero_bg_html() {
+	$tipo    = lahr_opt( 'hero_bg_tipo', 'video' );
+	$contain = (bool) lahr_opt( 'hero_bg_contain', 1 );
+	$cls     = 'cn-hero__bg ' . ( $contain ? 'cn-hero__bg--contain' : 'cn-hero__bg--cover' );
+
+	if ( 'foto' === $tipo ) {
+		$img = lahr_opt( 'hero_bg_imagem' );
+		if ( ! $img ) {
+			return '<div class="' . esc_attr( $cls ) . '"></div>';
+		}
+		return '<div class="' . esc_attr( $cls ) . '">' . lahr_img( $img, array( 'eager' => true, 'class' => 'cn-hero__bg-img', 'alt' => '' ) ) . '</div>';
+	}
+
+	// Vídeo.
+	$mp4    = lahr_opt( 'hero_bg_video' );
+	$webm   = lahr_opt( 'hero_bg_video_webm' );
+	$poster = lahr_opt( 'hero_bg_poster' );
+	if ( ! $mp4 && ! $webm ) {
+		return '<div class="' . esc_attr( $cls ) . '"></div>';
+	}
+	$poster_url = lahr_img_url( $poster );
+	$pattr      = $poster_url ? ' poster="' . esc_url( $poster_url ) . '"' : '';
+
+	$sources = '';
+	if ( $webm ) {
+		$sources .= '<source src="' . esc_url( wp_get_attachment_url( $webm ) ) . '" type="video/webm">';
+	}
+	if ( $mp4 ) {
+		$sources .= '<source src="' . esc_url( wp_get_attachment_url( $mp4 ) ) . '" type="video/mp4">';
+	}
+
+	$html  = '<div class="' . esc_attr( $cls ) . '">';
+	$html .= '<video class="cn-hero__bg-video" autoplay muted loop playsinline preload="metadata"' . $pattr . ' aria-hidden="true">' . $sources . '</video>';
+	$html .= '</div>';
+	return $html;
+}
+
+/** Um slide de TEXTO (sobre o fundo fixo). */
+function lahr_hero_text_slide_html( $slide ) {
 	$eyebrow = isset( $slide['eyebrow'] ) ? $slide['eyebrow'] : '';
 	$titulo  = isset( $slide['titulo'] ) ? $slide['titulo'] : '';
 	$lede    = isset( $slide['lede'] ) ? $slide['lede'] : '';
 	$ctas    = isset( $slide['ctas'] ) ? (array) $slide['ctas'] : array();
 
-	$html  = '<div class="cn-hero__slide">';
-	$html .= '<div class="cn-hero__split">';
-	$html .= '<div class="cn-hero__text">';
+	$html  = '<div class="cn-hero__slide"><div class="cn-hero__text">';
 	if ( '' !== $eyebrow ) {
 		$html .= '<span class="cn-hero__eyebrow">' . esc_html( $eyebrow ) . '</span>';
 	}
@@ -31,35 +67,18 @@ function lahr_hero_slide_html( $slide, $eager ) {
 	if ( $ctas ) {
 		$html .= '<div class="cn-hero__ctas">';
 		foreach ( $ctas as $c ) {
-			$txt   = isset( $c['texto'] ) ? $c['texto'] : '';
-			$url   = isset( $c['url'] ) ? $c['url'] : '';
-			$est   = isset( $c['estilo'] ) ? $c['estilo'] : 'gold';
+			$txt = isset( $c['texto'] ) ? $c['texto'] : '';
+			$url = isset( $c['url'] ) ? $c['url'] : '';
+			$est = isset( $c['estilo'] ) ? $c['estilo'] : 'gold';
 			$html .= lahr_btn_html( $txt, $url, $est, ( 'ghost' === $est ) );
 		}
 		$html .= '</div>';
 	}
-	$html .= '</div>'; // .cn-hero__text
-
-	$html .= '<div class="cn-hero__media cn-hero__media--bw">';
-	if ( 'video' === $tipo && $video ) {
-		$vurl   = wp_get_attachment_url( $video );
-		$type   = ( substr( (string) $vurl, -5 ) === '.webm' ) ? 'video/webm' : 'video/mp4';
-		$purl   = lahr_img_url( $poster );
-		$pattr  = $purl ? ' poster="' . esc_url( $purl ) . '"' : '';
-		$html  .= '<video class="cn-hero__video" autoplay muted loop playsinline preload="metadata"' . $pattr . ' aria-hidden="true"><source src="' . esc_url( $vurl ) . '" type="' . esc_attr( $type ) . '"></video>';
-	} else {
-		$html .= lahr_img( $img, array( 'eager' => $eager, 'alt' => wp_strip_all_tags( $titulo ) ) );
-	}
-	$html .= '<div class="cn-hero__media-tint" aria-hidden="true"></div>';
-	$html .= '</div>'; // .cn-hero__media
-
-	$html .= '</div>'; // .cn-hero__split
-	$html .= '</div>'; // .cn-hero__slide
+	$html .= '</div></div>';
 	return $html;
 }
 
 function lahr_section_hero_slider( $sec ) {
-	// Slides vêm do módulo "Banners (Hero)" (CPT lahr_banner).
 	$slides   = function_exists( 'lahr_get_banners' ) ? lahr_get_banners() : array();
 	$autoplay = (bool) lahr_opt( 'hero_autoplay', 1 );
 	$interval = (int) lahr_opt( 'hero_intervalo', 6 );
@@ -69,36 +88,35 @@ function lahr_section_hero_slider( $sec ) {
 		return '';
 	}
 
-	$section_atts = ' data-cursor-glow';
+	$atts = '';
 	if ( $count > 1 ) {
-		$section_atts .= ' data-lahr-slider';
+		$atts .= ' data-lahr-slider';
 		if ( $autoplay ) {
-			$section_atts .= ' data-autoplay="1" data-interval="' . esc_attr( $interval ) . '"';
+			$atts .= ' data-autoplay="1" data-interval="' . esc_attr( $interval ) . '"';
 		}
 	}
 
-	$html  = '<section class="cn-hero cn-hero--split' . ( $count > 1 ? ' cn-hero--slider' : '' ) . '"' . $section_atts . '>';
-	$html .= '<div class="cn-hero__cursor-glow" data-glow></div>';
-	$html .= '<div class="cn-hero__glow-1"></div>';
-	$html .= '<div class="cn-hero__glow-2"></div>';
+	$html  = '<section class="cn-hero cn-hero--video' . ( $count > 1 ? ' cn-hero--slider' : '' ) . '"' . $atts . '>';
+	$html .= lahr_hero_bg_html();
+	$html .= '<div class="cn-hero__scrim" aria-hidden="true"></div>';
 
-	$html .= '<div class="cn-hero__track">';
-	foreach ( $slides as $i => $slide ) {
-		$html .= lahr_hero_slide_html( $slide, 0 === $i );
+	$html .= '<div class="cn-hero__textwrap"><div class="cn-hero__track">';
+	foreach ( $slides as $slide ) {
+		$html .= lahr_hero_text_slide_html( $slide );
 	}
-	$html .= '</div>';
+	$html .= '</div></div>';
 
 	if ( $count > 1 ) {
 		$svg_prev = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>';
 		$svg_next = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>';
 		$html .= '<div class="cn-hero__arrows" aria-hidden="false">';
-		$html .= '<button type="button" class="cn-hero__arrow cn-hero__arrow--prev" aria-label="Slide anterior" data-lahr-prev>' . $svg_prev . '</button>';
-		$html .= '<button type="button" class="cn-hero__arrow cn-hero__arrow--next" aria-label="Próximo slide" data-lahr-next>' . $svg_next . '</button>';
+		$html .= '<button type="button" class="cn-hero__arrow cn-hero__arrow--prev" aria-label="Texto anterior" data-lahr-prev>' . $svg_prev . '</button>';
+		$html .= '<button type="button" class="cn-hero__arrow cn-hero__arrow--next" aria-label="Próximo texto" data-lahr-next>' . $svg_next . '</button>';
 		$html .= '</div>';
-		$html .= '<div class="cn-hero__dots" role="tablist" aria-label="Slides">';
+		$html .= '<div class="cn-hero__dots" role="tablist" aria-label="Textos">';
 		for ( $i = 0; $i < $count; $i++ ) {
 			$sel = 0 === $i ? ' is-active" aria-selected="true' : '" aria-selected="false';
-			$html .= '<button type="button" class="cn-hero__dot' . $sel . '" role="tab" aria-label="Slide ' . ( $i + 1 ) . '" data-lahr-dot="' . $i . '"></button>';
+			$html .= '<button type="button" class="cn-hero__dot' . $sel . '" role="tab" aria-label="Texto ' . ( $i + 1 ) . '" data-lahr-dot="' . $i . '"></button>';
 		}
 		$html .= '</div>';
 	}

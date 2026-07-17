@@ -60,51 +60,19 @@ add_action(
 			return;
 		}
 
-		$cond_foto  = array( array( array( 'field' => 'field_banner_tipo', 'operator' => '==', 'value' => 'foto' ) ) );
-		$cond_video = array( array( array( 'field' => 'field_banner_tipo', 'operator' => '==', 'value' => 'video' ) ) );
-
 		acf_add_local_field_group(
 			array(
 				'key'      => 'group_lahr_banner',
-				'title'    => 'Banner da Hero',
+				'title'    => 'Texto do slide',
 				'location' => array( array( array( 'param' => 'post_type', 'operator' => '==', 'value' => 'lahr_banner' ) ) ),
 				'position' => 'normal',
 				'style'    => 'default',
 				'fields'   => array(
 					array(
-						'key'     => 'field_banner_tipo',
-						'label'   => 'Tipo de mídia',
-						'name'    => 'tipo_midia',
-						'type'    => 'button_group',
-						'choices' => array( 'foto' => 'Foto', 'video' => 'Vídeo' ),
-						'default_value' => 'foto',
-					),
-					array(
-						'key'               => 'field_banner_imagem',
-						'label'             => 'Imagem (foto de fundo)',
-						'name'              => 'imagem',
-						'type'              => 'image',
-						'return_format'     => 'id',
-						'preview_size'      => 'medium',
-						'conditional_logic' => $cond_foto,
-					),
-					array(
-						'key'               => 'field_banner_video',
-						'label'             => 'Vídeo (mp4/webm)',
-						'name'              => 'video',
-						'type'              => 'file',
-						'return_format'     => 'id',
-						'mime_types'        => 'mp4,webm',
-						'conditional_logic' => $cond_video,
-					),
-					array(
-						'key'               => 'field_banner_poster',
-						'label'             => 'Poster do vídeo (imagem)',
-						'name'              => 'poster',
-						'type'              => 'image',
-						'return_format'     => 'id',
-						'preview_size'      => 'medium',
-						'conditional_logic' => $cond_video,
+						'key'     => 'field_banner_intro_msg',
+						'label'   => 'Sobre este slide',
+						'type'    => 'message',
+						'message' => 'A imagem/vídeo de fundo da hero é única e fica em <strong>Configurações do Site → Hero</strong>. Aqui você edita apenas o <strong>texto</strong> que passa por cima.',
 					),
 					array(
 						'key'   => 'field_banner_eyebrow',
@@ -142,42 +110,6 @@ add_action(
 			)
 		);
 	}
-);
-
-/**
- * Coluna de miniatura na listagem de banners (facilita identificar).
- */
-add_filter(
-	'manage_lahr_banner_posts_columns',
-	function ( $cols ) {
-		$new = array();
-		foreach ( $cols as $k => $v ) {
-			if ( 'title' === $k ) {
-				$new['lahr_thumb'] = 'Prévia';
-			}
-			$new[ $k ] = $v;
-		}
-		return $new;
-	}
-);
-add_action(
-	'manage_lahr_banner_posts_custom_column',
-	function ( $col, $post_id ) {
-		if ( 'lahr_thumb' !== $col ) {
-			return;
-		}
-		$img = get_post_meta( $post_id, 'imagem', true );
-		if ( ! $img ) {
-			$img = get_post_meta( $post_id, 'poster', true );
-		}
-		if ( $img ) {
-			echo wp_get_attachment_image( (int) $img, array( 80, 50 ), false, array( 'style' => 'width:80px;height:50px;object-fit:cover;border-radius:4px' ) );
-		} else {
-			echo '—';
-		}
-	},
-	10,
-	2
 );
 
 /**
