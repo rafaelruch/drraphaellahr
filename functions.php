@@ -78,4 +78,6 @@ require_once get_theme_file_path( '/inc/options.php' );
 require_once get_theme_file_path( '/inc/header-footer.php' );
 require_once get_theme_file_path( '/inc/banners.php' );
 require_once get_theme_file_path( '/inc/leads.php' );
+require_once get_theme_file_path( '/inc/uazapi.php' );
+require_once get_theme_file_path( '/inc/tracking.php' );
 require_once get_theme_file_path( '/inc/render.php' );

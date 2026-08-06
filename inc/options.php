@@ -218,6 +218,23 @@ add_action(
 					),
 					lahr_f_true_false( 'field_lahr_cfg_hero_autoplay', 'hero_autoplay', 'Passar os textos sozinho (autoplay)?', 1 ),
 					lahr_f_number( 'field_lahr_cfg_hero_intervalo', 'hero_intervalo', 'Intervalo do autoplay (segundos)', 6 ),
+
+					// ---------- LEADS NO GRUPO (WHATSAPP / UAZAPI) ----------
+					lahr_f_tab( 'cfg_tab_wa_leads', 'Leads no grupo (WhatsApp)' ),
+					array(
+						'key'     => 'field_lahr_cfg_wa_leads_msg',
+						'label'   => 'Notificação de leads no grupo',
+						'type'    => 'message',
+						'message' => 'A cada lead (Agendar ou widget), um resumo é enviado ao grupo <strong>RUCH 🤑 LEADS RAPHAEL LAHR</strong> via Uazapi, com o canal de origem (Google/Meta/Direto).',
+					),
+					lahr_f_text( 'field_lahr_cfg_wa_base', 'wa_base', 'URL da API (Uazapi)', 'https://ruch01.uazapi.com' ),
+					lahr_f_text( 'field_lahr_cfg_wa_group', 'wa_group', 'ID do grupo (JID @g.us)', '', 'Grupo de destino dos leads: RUCH 🤑 LEADS RAPHAEL LAHR.' ),
+					lahr_f_text( 'field_lahr_cfg_wa_token', 'wa_token', 'Token da instância Uazapi (segredo)', '', 'Em produção, prefira a constante LAHR_UAZAPI_TOKEN no wp-config.php. Nunca versionar no git.' ),
+
+					// ---------- RASTREAMENTO (PIXELS) ----------
+					lahr_f_tab( 'cfg_tab_pixels', 'Rastreamento (Pixels)' ),
+					lahr_f_text( 'field_lahr_cfg_meta_pixel', 'meta_pixel_id', 'Meta Pixel — ID', '1513020196487461' ),
+					lahr_f_text( 'field_lahr_cfg_ga4', 'ga4_id', 'Google (GA4) — ID de medição', 'G-84DP2Q169C' ),
 				),
 			)
 		);

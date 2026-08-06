@@ -459,6 +459,7 @@
             var waNum = (window.LAHR && window.LAHR.waNumber) || '5547999701100';
             var url = 'https://wa.me/' + waNum + '?text=' + encodeURIComponent(msg);
             if (window.dataLayer) window.dataLayer.push({ event: 'generate_lead', lead_source: 'whatsapp_widget', area_interesse: interesse || 'nao_informado' });
+            try { if (window.fbq) fbq('track', 'Lead'); if (window.gtag) gtag('event', 'generate_lead', { currency: 'BRL', value: 0, lead_source: 'whatsapp_widget' }); } catch (e) {}
 
             // Persistir lead no site + e-mails (mesmo endpoint do /agendar)
             if (window.LAHR && window.LAHR.ajaxUrl) {

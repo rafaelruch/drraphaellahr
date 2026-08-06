@@ -135,6 +135,9 @@ function lahr_handle_lead() {
 	// E-mails.
 	lahr_lead_send_emails( $data );
 
+	// Gatilho único da automação (notificação no grupo do WhatsApp via Uazapi, etc.).
+	do_action( 'lahr_lead_created', $data, $post_id );
+
 	wp_send_json_success( array( 'id' => $post_id ) );
 }
 
