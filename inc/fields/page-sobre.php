@@ -17,7 +17,7 @@ lahr_register_page(
 		array( 'type' => 'quote', 'key' => 'quote1' ),
 		array( 'type' => 'judo_about', 'key' => 'judo', 'anchor' => 'judo' ),
 		array( 'type' => 'gallery', 'key' => 'tatame' ),
-		array( 'type' => 'cards', 'key' => 'locais', 'bg_mid' => true, 'tilt' => false, 'top_gap' => true ),
+		array( 'type' => 'cards', 'key' => 'locais', 'bg_mid' => true, 'tilt' => false, 'top_gap' => true, 'cols' => 4 ),
 		array( 'type' => 'cta', 'key' => 'cta' ),
 	)
 );

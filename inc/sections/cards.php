@@ -27,11 +27,12 @@ function lahr_section_cards( $sec ) {
 	$tilt    = isset( $sec['tilt'] ) ? (bool) $sec['tilt'] : true;
 	$tiltatt = $tilt ? ' data-tilt' : '';
 	$gap     = ! empty( $sec['top_gap'] ) ? ' style="margin-top: var(--s-5);"' : '';
+	$colscls = ! empty( $sec['cols'] ) ? ' cn-cards--cols-' . (int) $sec['cols'] : '';
 
 	$html  = lahr_section_open( $sec, 'cn-section' );
 	$html .= '<div class="cn-container">';
 	$html .= lahr_sechead_html( $eyebrow, $titulo, $lede );
-	$html .= '<div class="cn-cards"' . $gap . '>';
+	$html .= '<div class="cn-cards' . $colscls . '"' . $gap . '>';
 
 	foreach ( (array) $cards as $c ) {
 		$num     = isset( $c['num'] ) ? $c['num'] : '';
