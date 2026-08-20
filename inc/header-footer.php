@@ -94,8 +94,8 @@ function lahr_render_site_footer() {
 	$inst      = (array) lahr_opt( 'footer_inst', array() );
 	$tel       = lahr_opt( 'telefone', '(47) 99970-1100' );
 	$wa_num    = lahr_opt( 'whatsapp_num', '5547999701100' );
-	$ig_user   = lahr_opt( 'instagram_user', '@drraphaellahrurgologista' );
-	$ig_url    = lahr_opt( 'instagram_url', 'https://instagram.com/drraphaellahrurgologista' );
+	$ig_user   = lahr_opt( 'instagram_user', '@drraphaellahrurologista' );
+	$ig_url    = lahr_opt( 'instagram_url', 'https://www.instagram.com/drraphaellahrurologista/' );
 	$endereco  = lahr_opt( 'endereco', 'Jurerê — Florianópolis/SC' );
 	$copyright = lahr_opt( 'copyright', '© 2026 Dr. Raphael Lahr' );
 	$assinatura = lahr_opt( 'assinatura', 'Desenvolvido por RUCH Digital' );
@@ -147,6 +147,10 @@ function lahr_render_site_footer() {
         <span><?php echo wp_kses( $assinatura, array( 'a' => array( 'href' => array(), 'target' => array(), 'rel' => array() ) ) ); ?></span>
     </div>
 </footer>
+
+<a class="lahr-ig-float" href="https://www.instagram.com/drraphaellahrurologista/" target="_blank" rel="noopener" aria-label="Instagram do Dr. Raphael Lahr">
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M12 2.2c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.42.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.42C8.42 2.21 8.8 2.2 12 2.2Zm0 1.8c-3.15 0-3.52.01-4.76.07-.9.04-1.39.19-1.71.32-.43.17-.74.37-1.06.69-.32.32-.52.63-.69 1.06-.13.32-.28.81-.32 1.71-.06 1.24-.07 1.61-.07 4.76s.01 3.52.07 4.76c.04.9.19 1.39.32 1.71.17.43.37.74.69 1.06.32.32.63.52 1.06.69.32.13.81.28 1.71.32 1.24.06 1.61.07 4.76.07s3.52-.01 4.76-.07c.9-.04 1.39-.19 1.71-.32.43-.17.74-.37 1.06-.69.32-.32.52-.63.69-1.06.13-.32.28-.81.32-1.71.06-1.24.07-1.61.07-4.76s-.01-3.52-.07-4.76c-.04-.9-.19-1.39-.32-1.71-.17-.43-.37-.74-.69-1.06-.32-.32-.63-.52-1.06-.69-.32-.13-.81-.28-1.71-.32C15.52 4.01 15.15 4 12 4Zm0 3.06A4.94 4.94 0 1 1 7.06 12 4.94 4.94 0 0 1 12 7.06Zm0 1.8A3.14 3.14 0 1 0 15.14 12 3.14 3.14 0 0 0 12 8.86Zm5.14-3.24a1.15 1.15 0 1 1-1.15 1.15 1.15 1.15 0 0 1 1.15-1.15Z"/></svg>
+</a>
 
 <div class="lm-wa">
     <button type="button" class="lm-wa__trigger" aria-label="Chat" aria-expanded="false" data-lm-wa-open>
