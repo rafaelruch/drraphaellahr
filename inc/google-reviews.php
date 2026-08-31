@@ -31,16 +31,50 @@ function lahr_get_google_reviews() {
 }
 
 /**
+ * Monta a URL canônica do perfil no Google (Google Meu Negócio) a partir do
+ * place_id no formato "0xHEX:0xCID". O CID (parte após ":") vira a URL oficial
+ * `https://www.google.com/maps?cid=<decimal>`, que abre a ficha do negócio com
+ * as avaliações. Retorna '' quando não é possível derivar.
+ *
+ * @param string $place_id place_id do JSON (ex.: "0x95...aebf:0x1a...d9ce").
+ * @return string
+ */
+function lahr_google_profile_url_from_place_id( $place_id ) {
+    if ( ! is_string( $place_id ) || false === strpos( $place_id, ':' ) ) {
+        return '';
+    }
+    $parts   = explode( ':', $place_id );
+    $cid_hex = end( $parts );
+    if ( ! preg_match( '/^0x[0-9a-f]+$/i', $cid_hex ) ) {
+        return '';
+    }
+    $cid = hexdec( $cid_hex ); // pode ser int (64-bit) ou float p/ valores grandes
+    if ( $cid <= 0 ) {
+        return '';
+    }
+    $cid_str = is_float( $cid ) ? number_format( $cid, 0, '', '' ) : (string) $cid;
+    return 'https://www.google.com/maps?cid=' . $cid_str;
+}
+
+/**
  * Renderiza a seção de depoimentos com carrossel.
  */
 function lahr_render_google_reviews_section() {
     $data = lahr_get_google_reviews();
     if ( empty( $data['reviews'] ) ) return;
 
-    $rating       = number_format( $data['overall_rating'] ?? 5, 1, ',', '' );
-    $total        = (int) ( $data['total_reviews'] ?? count( $data['reviews'] ) );
-    $place_url    = 'https://g.page/r/CY7ZhAcvc3gaEAE/review';
-    $reviews_url  = 'https://www.google.com/maps/place/Dr.+Raphael+Lahr+%7C+Urologista+em+Florian%C3%B3polis';
+    $rating = number_format( $data['overall_rating'] ?? 5, 1, ',', '' );
+    $total  = (int) ( $data['total_reviews'] ?? count( $data['reviews'] ) );
+
+    // Link "Baseado em X avaliações" → perfil no Google Meu Negócio.
+    // 1) URL definida na config (override manual); 2) derivada do place_id; 3) fallback.
+    $reviews_url = function_exists( 'lahr_opt' ) ? trim( (string) lahr_opt( 'google_perfil_url', '' ) ) : '';
+    if ( '' === $reviews_url ) {
+        $reviews_url = lahr_google_profile_url_from_place_id( $data['place_id'] ?? '' );
+    }
+    if ( '' === $reviews_url ) {
+        $reviews_url = 'https://www.google.com/maps/place/Dr.+Raphael+Lahr+%7C+Urologista+em+Florian%C3%B3polis';
+    }
 
     ob_start();
     ?>

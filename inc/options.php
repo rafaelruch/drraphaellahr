@@ -161,6 +161,7 @@ add_action(
 					lahr_f_text( 'field_lahr_cfg_instagram_user', 'instagram_user', 'Instagram (@usuário)', '@drraphaellahrurgologista' ),
 					lahr_f_text( 'field_lahr_cfg_instagram_url', 'instagram_url', 'Instagram (URL)', 'https://instagram.com/drraphaellahrurgologista' ),
 					lahr_f_text( 'field_lahr_cfg_endereco', 'endereco', 'Endereço', 'Jurerê — Florianópolis/SC' ),
+					lahr_f_text( 'field_lahr_cfg_google_perfil_url', 'google_perfil_url', 'Google Meu Negócio (URL do perfil)', '', 'Destino do link "Baseado em X avaliações no Google". Em branco = gerado automaticamente a partir do perfil (place_id).' ),
 					lahr_f_text( 'field_lahr_cfg_lead_email', 'lead_email', 'E-mail para receber os leads do formulário', '', 'Deixe em branco para usar o e-mail do administrador do site.' ),
 
 					// ---------- NAVEGAÇÃO ----------
