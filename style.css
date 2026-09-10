@@ -3,7 +3,7 @@ Theme Name: Lahr Cinematic
 Theme URI: https://doutorraphaellahr.com
 Author: RUCH Digital
 Description: Tema cinematográfico premium — fundo navy dominante, tipografia central, acento dourado em palavras-chave, parallax sutil, tilt 3D, glow seguindo cursor. Sistema único e coeso. Inspirado em mprez.fr + pomelo.la. Identidade oficial (Cormorant + Montserrat, navy + dourado) preservada.
-Version: 4.2.0
+Version: 4.2.1
 Requires at least: 6.5
 Requires PHP: 8.0
 Text Domain: lahr-cinematic
@@ -2176,7 +2176,8 @@ p { margin: 0; }
     padding: var(--s-3) var(--layout-pad) 0;
     border-top: 1px solid var(--c-line);
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    text-align: center;
     font-family: var(--f-sans);
     font-size: 10.5px;
     letter-spacing: 0.22em;
@@ -2486,14 +2487,6 @@ body.admin-bar .cn-header { top: 32px; }
     margin: 0 0 var(--s-3);
     line-height: 1.6;
 }
-
-/* Link de crédito da agência no rodapé */
-.cn-footer__bottom a {
-    color: var(--c-gold);
-    text-decoration: none;
-    transition: opacity 0.25s ease;
-}
-.cn-footer__bottom a:hover { opacity: 0.7; }
 
 /* ============================================================
    HERO EM VÍDEO (fundo fixo inteiro + textos passando por cima)

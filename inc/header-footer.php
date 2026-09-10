@@ -97,8 +97,7 @@ function lahr_render_site_footer() {
 	$ig_user   = lahr_opt( 'instagram_user', '@drraphaellahrurologista' );
 	$ig_url    = lahr_opt( 'instagram_url', 'https://www.instagram.com/drraphaellahrurologista/' );
 	$endereco  = lahr_opt( 'endereco', 'Jurerê — Florianópolis/SC' );
-	$copyright = lahr_opt( 'copyright', '© 2026 Dr. Raphael Lahr' );
-	$assinatura = lahr_opt( 'assinatura', 'Desenvolvido por RUCH Digital' );
+	$copyright = lahr_opt( 'copyright', '© 2026 Dr. Raphael Lahr com todos os direitos reservados.' );
 
 	// Widget.
 	$wa_nome    = lahr_opt( 'wa_nome', 'Dr. Raphael Lahr' );
@@ -142,9 +141,9 @@ function lahr_render_site_footer() {
             </ul>
         </div>
     </div>
+    <!-- Tema "Lahr Cinematic" desenvolvido por RUCH Digital · https://ruch.digital -->
     <div class="cn-footer__bottom">
         <span><?php echo esc_html( $copyright ); ?></span>
-        <span><?php echo wp_kses( $assinatura, array( 'a' => array( 'href' => array(), 'target' => array(), 'rel' => array() ) ) ); ?></span>
     </div>
 </footer>
 

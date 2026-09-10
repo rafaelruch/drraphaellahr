@@ -161,7 +161,7 @@ add_action(
 					lahr_f_text( 'field_lahr_cfg_instagram_user', 'instagram_user', 'Instagram (@usuário)', '@drraphaellahrurgologista' ),
 					lahr_f_text( 'field_lahr_cfg_instagram_url', 'instagram_url', 'Instagram (URL)', 'https://instagram.com/drraphaellahrurgologista' ),
 					lahr_f_text( 'field_lahr_cfg_endereco', 'endereco', 'Endereço', 'Jurerê — Florianópolis/SC' ),
-					lahr_f_text( 'field_lahr_cfg_google_perfil_url', 'google_perfil_url', 'Google Meu Negócio (URL do perfil)', '', 'Destino do link "Baseado em X avaliações no Google". Em branco = gerado automaticamente a partir do perfil (place_id).' ),
+					lahr_f_text( 'field_lahr_cfg_google_perfil_url', 'google_perfil_url', 'Google Meu Negócio (URL do perfil)', '', 'Destino do link "Ver no Google" (seção de depoimentos). Em branco = gerado automaticamente a partir do perfil (place_id).' ),
 					lahr_f_text( 'field_lahr_cfg_lead_email', 'lead_email', 'E-mail para receber os leads do formulário', '', 'Deixe em branco para usar o e-mail do administrador do site.' ),
 
 					// ---------- NAVEGAÇÃO ----------
@@ -176,8 +176,7 @@ add_action(
 					lahr_f_text( 'field_lahr_cfg_footer_inst_titulo', 'footer_inst_titulo', 'Título coluna "Institucional"', 'Institucional' ),
 					lahr_f_link_repeater( 'field_lahr_cfg_footer_inst', 'footer_inst', 'Links — Institucional', false ),
 					lahr_f_text( 'field_lahr_cfg_footer_contato_titulo', 'footer_contato_titulo', 'Título coluna "Contato"', 'Contato' ),
-					lahr_f_text( 'field_lahr_cfg_copyright', 'copyright', 'Copyright', '© 2026 Dr. Raphael Lahr' ),
-					lahr_f_text( 'field_lahr_cfg_assinatura', 'assinatura', 'Assinatura', 'Desenvolvido por RUCH Digital' ),
+					lahr_f_text( 'field_lahr_cfg_copyright', 'copyright', 'Copyright (linha centralizada do rodapé)', '© 2026 Dr. Raphael Lahr com todos os direitos reservados.' ),
 
 					// ---------- WIDGET WHATSAPP ----------
 					lahr_f_tab( 'cfg_tab_wa', 'Widget WhatsApp' ),
@@ -239,5 +238,27 @@ add_action(
 				),
 			)
 		);
+	}
+);
+
+/**
+ * Migração única (rodapé): troca o copyright padrão antigo pelo novo texto e
+ * remove a assinatura "Desenvolvido por…", que deixou de existir no rodapé.
+ * Só mexe no valor se ele ainda for exatamente o padrão antigo.
+ */
+add_action(
+	'admin_init',
+	function () {
+		if ( get_option( 'lahr_footer_copy_v2' ) ) {
+			return;
+		}
+		$id = lahr_config_id();
+		if ( $id ) {
+			if ( '© 2026 Dr. Raphael Lahr' === trim( (string) get_post_meta( $id, 'copyright', true ) ) ) {
+				update_post_meta( $id, 'copyright', '© 2026 Dr. Raphael Lahr com todos os direitos reservados.' );
+			}
+			delete_post_meta( $id, 'assinatura' );
+		}
+		update_option( 'lahr_footer_copy_v2', 1, false );
 	}
 );

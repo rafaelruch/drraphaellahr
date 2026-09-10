@@ -91,8 +91,8 @@ function lahr_render_google_reviews_section() {
                     </span>
                     <span class="cn-reviews__rating"><?php echo esc_html( $rating ); ?></span>
                     <span class="cn-reviews__divider"></span>
-                    <a class="cn-reviews__count" href="<?php echo esc_url( $reviews_url ); ?>" target="_blank" rel="noopener">
-                        Baseado em <strong><?php echo esc_html( $total ); ?> avaliações no Google</strong>
+                    <a class="cn-reviews__count" href="<?php echo esc_url( $reviews_url ); ?>" target="_blank" rel="noopener" aria-label="Ver as <?php echo esc_attr( $total ); ?> avaliações no Google">
+                        <strong>Ver no Google</strong>
                     </a>
                 </div>
             </header>
