@@ -12,6 +12,55 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/* ------------------------------------------------------------ Atribuição */
+/**
+ * Regra ÚNICA de canal a partir dos sinais de atribuição (cookie ou UTMs gravados).
+ * Usada no envio (cookie lahr_attr), no painel e no backfill dos leads antigos.
+ *
+ * @param array $d { gclid, wbraid, gbraid, fbclid, utm_source }
+ * @return string 'Google Ads' | 'Meta Ads' | '<utm_source>' | 'Direto / Orgânico'
+ */
+function lahr_lead_canal_from( array $d ) {
+	$src = strtolower( trim( (string) ( $d['utm_source'] ?? '' ) ) );
+	if ( ! empty( $d['gclid'] ) || ! empty( $d['wbraid'] ) || ! empty( $d['gbraid'] ) || in_array( $src, array( 'google', 'adwords', 'gads', 'google-ads', 'googleads' ), true ) ) {
+		return 'Google Ads';
+	}
+	if ( ! empty( $d['fbclid'] ) || in_array( $src, array( 'facebook', 'instagram', 'meta', 'fb', 'ig', 'meta-ads', 'metaads' ), true ) ) {
+		return 'Meta Ads';
+	}
+	if ( '' !== $src ) {
+		return sanitize_text_field( (string) $d['utm_source'] );
+	}
+	return 'Direto / Orgânico';
+}
+
+/** Lê o cookie lahr_attr (setado por attribution.js; last-touch, 90 dias). */
+function lahr_lead_attr_cookie() {
+	$raw = isset( $_COOKIE['lahr_attr'] ) ? wp_unslash( $_COOKIE['lahr_attr'] ) : '';
+	$d   = json_decode( (string) $raw, true );
+	return is_array( $d ) ? $d : array();
+}
+
+/** Canal de um lead salvo: meta `canal` (leads novos) ou derivado dos UTMs gravados (antigos). */
+function lahr_lead_get_canal( $post_id ) {
+	$c = (string) get_post_meta( $post_id, 'canal', true );
+	if ( '' !== $c ) {
+		return $c;
+	}
+	return lahr_lead_canal_from(
+		array(
+			'gclid'      => get_post_meta( $post_id, 'gclid', true ),
+			'fbclid'     => get_post_meta( $post_id, 'fbclid', true ),
+			'utm_source' => get_post_meta( $post_id, 'utm_source', true ),
+		)
+	);
+}
+
+/** Rótulo do formulário de origem. */
+function lahr_lead_form_label( $v ) {
+	return 'agendar' === $v ? 'Formulário Agendar' : ( 'widget' === $v ? 'Botão de WhatsApp' : 'Site' );
+}
+
 /**
  * CPT de leads (criado apenas programaticamente).
  */
@@ -55,7 +104,9 @@ add_filter(
 			'lahr_whatsapp' => 'WhatsApp',
 			'lahr_cidade'  => 'Cidade',
 			'lahr_interesse' => 'Interesse',
-			'lahr_origem'  => 'Origem',
+			'lahr_canal'     => 'Canal',
+			'lahr_form'      => 'Formulário',
+			'lahr_origem'    => 'Como encontrou',
 			'date'         => 'Recebido em',
 		);
 	}
@@ -69,7 +120,11 @@ add_action(
 			'lahr_interesse' => 'interesse',
 			'lahr_origem'    => 'origem',
 		);
-		if ( isset( $map[ $col ] ) ) {
+		if ( 'lahr_canal' === $col ) {
+			echo esc_html( lahr_lead_get_canal( $post_id ) );
+		} elseif ( 'lahr_form' === $col ) {
+			echo esc_html( lahr_lead_form_label( get_post_meta( $post_id, 'origem_form', true ) ) );
+		} elseif ( isset( $map[ $col ] ) ) {
 			echo esc_html( get_post_meta( $post_id, $map[ $col ], true ) );
 		}
 	},
@@ -113,6 +168,18 @@ function lahr_handle_lead() {
 	if ( mb_strlen( $data['nome'] ) < 3 || preg_replace( '/\D/', '', $data['whatsapp'] ) === '' ) {
 		wp_send_json_error( array( 'msg' => 'dados incompletos' ), 422 );
 	}
+
+	// Atribuição (cookie lahr_attr): completa UTMs ausentes (ex.: widget) e define o canal.
+	$attr = lahr_lead_attr_cookie();
+	foreach ( array( 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content' ) as $k ) {
+		if ( '' === $data[ $k ] && ! empty( $attr[ $k ] ) ) {
+			$data[ $k ] = sanitize_text_field( (string) $attr[ $k ] );
+		}
+	}
+	foreach ( array( 'gclid', 'wbraid', 'gbraid', 'fbclid' ) as $k ) {
+		$data[ $k ] = ! empty( $attr[ $k ] ) ? sanitize_text_field( (string) $attr[ $k ] ) : '';
+	}
+	$data['canal'] = lahr_lead_canal_from( $data );
 
 	// Armazena.
 	$post_id = wp_insert_post(
@@ -182,3 +249,32 @@ function lahr_lead_send_emails( $data ) {
 		wp_mail( $data['email'], 'Recebemos sua solicitação — Dr. Raphael Lahr', $msg, $headers );
 	}
 }
+
+/* ------------------------------------------------ Filtro por canal (listagem) */
+add_action(
+	'restrict_manage_posts',
+	function ( $post_type ) {
+		if ( 'lahr_lead' !== $post_type ) {
+			return;
+		}
+		$cur  = isset( $_GET['lahr_canal'] ) ? sanitize_text_field( wp_unslash( $_GET['lahr_canal'] ) ) : '';
+		$opts = array( 'Google Ads', 'Meta Ads', 'Direto / Orgânico' );
+		echo '<select name="lahr_canal"><option value="">Todos os canais</option>';
+		foreach ( $opts as $o ) {
+			printf( '<option value="%s"%s>%s</option>', esc_attr( $o ), selected( $cur, $o, false ), esc_html( $o ) );
+		}
+		echo '</select>';
+	}
+);
+add_action(
+	'pre_get_posts',
+	function ( $q ) {
+		if ( ! is_admin() || ! $q->is_main_query() || 'lahr_lead' !== $q->get( 'post_type' ) ) {
+			return;
+		}
+		$c = isset( $_GET['lahr_canal'] ) ? sanitize_text_field( wp_unslash( $_GET['lahr_canal'] ) ) : '';
+		if ( '' !== $c ) {
+			$q->set( 'meta_query', array( array( 'key' => 'canal', 'value' => $c ) ) );
+		}
+	}
+);

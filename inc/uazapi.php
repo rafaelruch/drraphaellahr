@@ -73,23 +73,9 @@ function lahr_uazapi_send_text( $text, $number = '' ) {
 /* ------------------------------------------- Atribuição de origem (cookie) */
 /** Lê o cookie lahr_attr (setado por attribution.js) e deriva o canal. */
 function lahr_lead_origem() {
-	$raw = isset( $_COOKIE['lahr_attr'] ) ? wp_unslash( $_COOKIE['lahr_attr'] ) : '';
-	$d   = json_decode( $raw, true );
-	if ( ! is_array( $d ) ) {
-		return array( 'canal' => 'Direto / Orgânico', 'campanha' => '' );
-	}
-
-	$src   = strtolower( $d['utm_source'] ?? '' );
-	$canal = 'Direto / Orgânico';
-	if ( ! empty( $d['gclid'] ) || ! empty( $d['wbraid'] ) || ! empty( $d['gbraid'] ) || in_array( $src, array( 'google', 'adwords', 'gads' ), true ) ) {
-		$canal = 'Google Ads';
-	} elseif ( ! empty( $d['fbclid'] ) || in_array( $src, array( 'facebook', 'instagram', 'meta', 'fb', 'ig' ), true ) ) {
-		$canal = 'Meta Ads';
-	} elseif ( $src ) {
-		$canal = sanitize_text_field( $d['utm_source'] );
-	}
+	$d = lahr_lead_attr_cookie();
 	return array(
-		'canal'    => $canal,
+		'canal'    => lahr_lead_canal_from( $d ),
 		'campanha' => isset( $d['utm_campaign'] ) ? sanitize_text_field( $d['utm_campaign'] ) : '',
 	);
 }
