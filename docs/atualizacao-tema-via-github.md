@@ -142,10 +142,12 @@ add_filter( 'upgrader_source_selection', function ( $source, $remote_source, $up
 	return $source;
 }, 10, 4 );
 
-/** "Verificar novamente" (force-check) busca o release na hora. */
+/** "Verificar novamente" (force-check) busca o release na hora.
+ *  PRIORIDADE 1 é obrigatória: o core roda wp_update_themes() neste mesmo hook
+ *  na prioridade 10 — o cache tem de ser limpo antes, senão só aparece na 2ª clicada. */
 add_action( 'load-update-core.php', function () {
 	if ( ! empty( $_GET['force-check'] ) ) delete_transient( 'lahr_update_release' );
-} );
+}, 1 );
 
 /** Limpa o cache após concluir uma atualização. */
 add_action( 'upgrader_process_complete', function () {
@@ -210,6 +212,8 @@ Duas formas de lidar:
 1. *Painel → Atualizações* (ou *Aparência → Temas*).
 2. Se não aparecer na hora, clicar em **"Verificar novamente"** (o cache é de 6h;
    o link chama `update-core.php?force-check=1`, que zera o cache do tema).
+   > Armadilha real: o hook que zera o cache precisa ter **prioridade 1** (o core
+   > checa temas na prioridade 10 do mesmo hook). Sem isso, só aparece na 2ª clicada.
 3. Marcar o tema em **Temas** e clicar em **Atualizar temas**.
 4. Pronto — o WP baixa o zip do release e reinstala.
 

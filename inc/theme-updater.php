@@ -130,6 +130,9 @@ add_filter(
 
 /**
  * "Verificar novamente" (force-check) busca o release na hora.
+ *
+ * Prioridade 1: o core roda wp_update_themes() neste mesmo hook (prioridade 10);
+ * o cache precisa ser limpo ANTES, senão a 1ª clicada ainda usa o release velho.
  */
 add_action(
 	'load-update-core.php',
@@ -137,7 +140,8 @@ add_action(
 		if ( ! empty( $_GET['force-check'] ) ) {
 			delete_transient( 'lahr_update_release' );
 		}
-	}
+	},
+	1
 );
 
 /** Limpa o cache após concluir uma atualização. */
