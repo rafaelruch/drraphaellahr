@@ -13,23 +13,80 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /* ------------------------------------------------------------ Atribuição */
+/** Normaliza um rótulo de UTM para comparação (minúsculas, "_"/espaço → "-"). */
+function lahr_attr_norm( $v ) {
+	return trim( str_replace( array( '_', ' ', '+' ), '-', strtolower( trim( (string) $v ) ) ), '-' );
+}
+
+/**
+ * O visitante veio do perfil do Google Meu Negócio (Perfil da Empresa / Maps)?
+ *
+ * Sinal principal: UTMs no link "Site" do perfil (ex.: ?utm_source=gmn&utm_medium=organic&utm_campaign=perfil).
+ * Sinal secundário: referrer do Google Maps / app do Maps / links g.page e share.google.
+ * Observação: um clique no perfil exibido na busca do Google chega só com referrer
+ * "google.com" — indistinguível da busca orgânica — por isso o link do perfil
+ * DEVE ter UTMs para a atribuição ser 100% confiável.
+ */
+function lahr_lead_is_gmn( array $d ) {
+	$tags = array(
+		'gmn', 'gmb', 'gbp', 'google-meu-negocio', 'meu-negocio', 'googlemeunegocio', 'google-my-business',
+		'googlemybusiness', 'my-business', 'google-business', 'googlebusiness', 'google-business-profile',
+		'business-profile', 'perfil-da-empresa', 'perfil-google', 'google-perfil', 'google-maps', 'googlemaps', 'maps',
+	);
+	foreach ( array( 'utm_source', 'utm_medium', 'utm_campaign' ) as $k ) {
+		if ( ! empty( $d[ $k ] ) && in_array( lahr_attr_norm( $d[ $k ] ), $tags, true ) ) {
+			return true;
+		}
+	}
+	$ref = strtolower( (string) ( $d['ref'] ?? '' ) );
+	return '' !== $ref && (bool) preg_match( '#(^|\.)maps\.google\.|^(www\.)?google\.[a-z.]+/maps|business\.google\.com|(^|\.)g\.page$|^share\.google$|maps\.app\.goo\.gl|com\.google\.android\.apps\.maps#', $ref );
+}
+
 /**
  * Regra ÚNICA de canal a partir dos sinais de atribuição (cookie ou UTMs gravados).
  * Usada no envio (cookie lahr_attr), no painel e no backfill dos leads antigos.
  *
- * @param array $d { gclid, wbraid, gbraid, fbclid, utm_source }
- * @return string 'Google Ads' | 'Meta Ads' | '<utm_source>' | 'Direto / Orgânico'
+ * @param array $d { gclid, wbraid, gbraid, fbclid, utm_source, utm_medium, utm_campaign, ref }
+ * @return string 'Google Ads' | 'Google Meu Negócio' | 'Google Orgânico' | 'Meta Ads' | '<utm_source>' | '<site de origem>' | 'Direto / Orgânico'
  */
 function lahr_lead_canal_from( array $d ) {
-	$src = strtolower( trim( (string) ( $d['utm_source'] ?? '' ) ) );
-	if ( ! empty( $d['gclid'] ) || ! empty( $d['wbraid'] ) || ! empty( $d['gbraid'] ) || in_array( $src, array( 'google', 'adwords', 'gads', 'google-ads', 'googleads' ), true ) ) {
+	$src = lahr_attr_norm( $d['utm_source'] ?? '' );
+	$med = lahr_attr_norm( $d['utm_medium'] ?? '' );
+	$ref = strtolower( (string) ( $d['ref'] ?? '' ) );
+
+	// 1) Clique pago com identificador do Google (inclui anúncios locais no Maps).
+	if ( ! empty( $d['gclid'] ) || ! empty( $d['wbraid'] ) || ! empty( $d['gbraid'] ) ) {
 		return 'Google Ads';
 	}
+	// 2) Perfil do Google Meu Negócio.
+	if ( lahr_lead_is_gmn( $d ) ) {
+		return 'Google Meu Negócio';
+	}
+	// 3) utm_source=google: só é Ads se o meio for pago (ou não informado — compatível com links antigos).
+	if ( in_array( $src, array( 'google', 'adwords', 'gads', 'google-ads', 'googleads' ), true ) ) {
+		return in_array( $med, array( 'organic', 'organico', 'seo', 'referral', 'local' ), true ) ? 'Google Orgânico' : 'Google Ads';
+	}
+	// 4) Meta.
 	if ( ! empty( $d['fbclid'] ) || in_array( $src, array( 'facebook', 'instagram', 'meta', 'fb', 'ig', 'meta-ads', 'metaads' ), true ) ) {
 		return 'Meta Ads';
 	}
+	// 5) Outra fonte nomeada por UTM.
 	if ( '' !== $src ) {
 		return sanitize_text_field( (string) $d['utm_source'] );
+	}
+	// 6) Sem UTM: classifica pelo site de origem (referrer).
+	if ( '' !== $ref ) {
+		$host = preg_replace( '#^www\.#', '', strtok( $ref, '/' ) );
+		if ( preg_match( '#(^|\.)google\.[a-z.]+$#', $host ) ) {
+			return 'Google Orgânico';
+		}
+		if ( preg_match( '#(^|\.)(bing\.com|duckduckgo\.com|yahoo\.com|search\.brave\.com|ecosia\.org)$#', $host ) ) {
+			return 'Busca orgânica (outros)';
+		}
+		if ( preg_match( '#(^|\.)(instagram\.com|facebook\.com|fb\.com|threads\.net)$#', $host ) ) {
+			return 'Instagram / Facebook';
+		}
+		return sanitize_text_field( $host );
 	}
 	return 'Direto / Orgânico';
 }
@@ -41,19 +98,22 @@ function lahr_lead_attr_cookie() {
 	return is_array( $d ) ? $d : array();
 }
 
-/** Canal de um lead salvo: meta `canal` (leads novos) ou derivado dos UTMs gravados (antigos). */
+/** Sinais de atribuição gravados num lead (para recalcular o canal). */
+function lahr_lead_attr_meta( $post_id ) {
+	$d = array();
+	foreach ( array( 'gclid', 'wbraid', 'gbraid', 'fbclid', 'utm_source', 'utm_medium', 'utm_campaign', 'ref' ) as $k ) {
+		$d[ $k ] = (string) get_post_meta( $post_id, $k, true );
+	}
+	return $d;
+}
+
+/** Canal de um lead salvo: meta `canal` (leads novos) ou derivado dos sinais gravados (antigos). */
 function lahr_lead_get_canal( $post_id ) {
 	$c = (string) get_post_meta( $post_id, 'canal', true );
 	if ( '' !== $c ) {
 		return $c;
 	}
-	return lahr_lead_canal_from(
-		array(
-			'gclid'      => get_post_meta( $post_id, 'gclid', true ),
-			'fbclid'     => get_post_meta( $post_id, 'fbclid', true ),
-			'utm_source' => get_post_meta( $post_id, 'utm_source', true ),
-		)
-	);
+	return lahr_lead_canal_from( lahr_lead_attr_meta( $post_id ) );
 }
 
 /** Rótulo do formulário de origem. */
@@ -176,7 +236,7 @@ function lahr_handle_lead() {
 			$data[ $k ] = sanitize_text_field( (string) $attr[ $k ] );
 		}
 	}
-	foreach ( array( 'gclid', 'wbraid', 'gbraid', 'fbclid' ) as $k ) {
+	foreach ( array( 'gclid', 'wbraid', 'gbraid', 'fbclid', 'ref' ) as $k ) {
 		$data[ $k ] = ! empty( $attr[ $k ] ) ? sanitize_text_field( (string) $attr[ $k ] ) : '';
 	}
 	$data['canal'] = lahr_lead_canal_from( $data );
@@ -258,7 +318,7 @@ add_action(
 			return;
 		}
 		$cur  = isset( $_GET['lahr_canal'] ) ? sanitize_text_field( wp_unslash( $_GET['lahr_canal'] ) ) : '';
-		$opts = array( 'Google Ads', 'Meta Ads', 'Direto / Orgânico' );
+		$opts = array( 'Google Ads', 'Google Meu Negócio', 'Google Orgânico', 'Meta Ads', 'Instagram / Facebook', 'Direto / Orgânico' );
 		echo '<select name="lahr_canal"><option value="">Todos os canais</option>';
 		foreach ( $opts as $o ) {
 			printf( '<option value="%s"%s>%s</option>', esc_attr( $o ), selected( $cur, $o, false ), esc_html( $o ) );

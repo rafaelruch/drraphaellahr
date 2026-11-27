@@ -198,7 +198,10 @@ function lahr_leads_dash_svg( array $b ) {
 function lahr_leads_dash_color( $k ) {
 	$map = array(
 		'Google Ads'         => '#4285F4',
+		'Google Meu Negócio' => '#34A853',
+		'Google Orgânico'    => '#FBBC05',
 		'Meta Ads'           => '#E1306C',
+		'Instagram / Facebook' => '#C13584',
 		'Direto / Orgânico'  => '#8c8f94',
 		'Formulário Agendar' => '#b8955a',
 		'Botão de WhatsApp'  => '#25D366',
@@ -335,7 +338,7 @@ function lahr_leads_dash_page() {
 				$agg['canal'],
 				$agg['total'],
 				10,
-				'<strong>Google Ads</strong> = gclid ou utm_source=google · <strong>Meta Ads</strong> = fbclid ou utm_source=facebook/instagram · outro utm_source = nome da fonte · sem sinal = <strong>Direto / Orgânico</strong>.'
+				'<strong>Google Ads</strong> = gclid ou utm_source=google (meio pago) · <strong>Google Meu Negócio</strong> = link do perfil com UTM (utm_source=gmn) ou vindo do Google Maps · <strong>Google Orgânico</strong> = busca do Google sem anúncio · <strong>Meta Ads</strong> = fbclid ou utm_source=facebook/instagram · outro utm_source/site = nome da fonte · sem sinal = <strong>Direto / Orgânico</strong>.'
 			);
 			lahr_leads_dash_table( 'Por formulário', $agg['form'], $agg['total'] );
 			lahr_leads_dash_table( 'Por interesse', $agg['interesse'], $agg['total'] );
@@ -394,10 +397,12 @@ add_action(
 );
 
 /* ------------------------------------------------- Backfill do canal (1x) */
+// v2: recalcula o canal de TODOS os leads com a regra nova (Google Meu Negócio,
+// utm_medium orgânico ≠ Ads). Só usa os sinais gravados no próprio lead.
 add_action(
 	'admin_init',
 	function () {
-		if ( get_option( 'lahr_leads_canal_backfill' ) ) {
+		if ( get_option( 'lahr_leads_canal_backfill_v2' ) ) {
 			return;
 		}
 		$ids = get_posts(
@@ -406,15 +411,15 @@ add_action(
 				'post_status' => 'any',
 				'numberposts' => 2000,
 				'fields'      => 'ids',
-				'meta_query'  => array( array( 'key' => 'canal', 'compare' => 'NOT EXISTS' ) ),
 			)
 		);
 		if ( $ids ) {
 			update_meta_cache( 'post', $ids );
 			foreach ( $ids as $id ) {
-				update_post_meta( $id, 'canal', lahr_lead_get_canal( $id ) );
+				update_post_meta( $id, 'canal', lahr_lead_canal_from( lahr_lead_attr_meta( $id ) ) );
 			}
 		}
 		update_option( 'lahr_leads_canal_backfill', 1, false );
+		update_option( 'lahr_leads_canal_backfill_v2', 1, false );
 	}
 );
