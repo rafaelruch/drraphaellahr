@@ -10,6 +10,24 @@
  */
 (function () {
     'use strict';
+    // Idioma (PT padrão / EN): textos do JS vêm traduzidos do servidor em LAHR.i18n.
+    var LANG = (window.LAHR && window.LAHR.lang) || 'pt';
+    var T = function (s) { return (window.LAHR && window.LAHR.i18n && window.LAHR.i18n[s]) || s; };
+    // Telefone: máscara brasileira em PT; formato internacional livre em EN.
+    var maskPhone = function (e) {
+        if (LANG === 'en') {
+            e.target.value = e.target.value.replace(/[^\d+()\s-]/g, '').slice(0, 22);
+            return;
+        }
+        var v = e.target.value.replace(/\D/g, '').slice(0, 11);
+        var f = v;
+        if (v.length > 0) f = '(' + v.slice(0, 2);
+        if (v.length >= 3) f += ') ' + v.slice(2, 7);
+        if (v.length >= 8) f += '-' + v.slice(7, 11);
+        e.target.value = f;
+    };
+    var phoneOk = function (v) { return v.replace(/\D/g, '').length >= (LANG === 'en' ? 8 : 10); };
+    var optionText = function (sel) { return sel && sel.selectedIndex > 0 ? sel.options[sel.selectedIndex].text : ''; };
     var prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var isCoarse = window.matchMedia('(pointer: coarse)').matches;
 
@@ -261,14 +279,7 @@
         // Phone mask
         var phoneInp = agendForm.querySelector('input[data-lm-mask="phone"]');
         if (phoneInp) {
-            phoneInp.addEventListener('input', function (e) {
-                var v = e.target.value.replace(/\D/g, '').slice(0, 11);
-                var f = v;
-                if (v.length > 0) f = '(' + v.slice(0, 2);
-                if (v.length >= 3) f += ') ' + v.slice(2, 7);
-                if (v.length >= 8) f += '-' + v.slice(7, 11);
-                e.target.value = f;
-            });
+            phoneInp.addEventListener('input', maskPhone);
         }
 
         // Character counter for textarea
@@ -294,7 +305,7 @@
             var valid = true;
             [
                 ['nome',      fields.nome.value.trim().length >= 3],
-                ['whatsapp',  fields.whatsapp.value.replace(/\D/g, '').length >= 10],
+                ['whatsapp',  phoneOk(fields.whatsapp.value)],
                 ['cidade',    fields.cidade.value.trim().length >= 2],
                 ['interesse', fields.interesse.value.trim().length > 0]
             ].forEach(function (pair) {
@@ -311,22 +322,24 @@
             var whatsapp  = fields.whatsapp.value.trim();
             var cidade    = fields.cidade.value.trim();
             var interesse = fields.interesse.value;
+            var interesseTxt = optionText(fields.interesse) || interesse;
             var email     = (agendForm.querySelector('[name="email"]') || {}).value || '';
             var origem    = (agendForm.querySelector('[name="origem"]') || {}).value || '';
+            var origemTxt = optionText(agendForm.querySelector('[name="origem"]')) || origem;
             var mensagem  = (agendForm.querySelector('[name="mensagem"]') || {}).value || '';
 
             // Compose WhatsApp message
             var lines = [
-                'Olá! Gostaria de agendar uma consulta com o Dr. Raphael.',
+                T('Olá! Gostaria de agendar uma consulta com o Dr. Raphael.'),
                 '',
-                'Nome: ' + nome,
+                T('Nome:') + ' ' + nome,
                 'WhatsApp: ' + whatsapp,
-                'Cidade: ' + cidade,
-                'Interesse: ' + interesse
+                T('Cidade:') + ' ' + cidade,
+                T('Interesse:') + ' ' + interesseTxt
             ];
             if (email) lines.push('E-mail: ' + email);
-            if (origem) lines.push('Como me encontrou: ' + origem);
-            if (mensagem) lines.push('', 'Mensagem:', mensagem);
+            if (origem) lines.push(T('Como me encontrou:') + ' ' + origemTxt);
+            if (mensagem) lines.push('', T('Mensagem:'), mensagem);
             var waNum = (window.LAHR && window.LAHR.waNumber) || '5547999701100';
             var url = 'https://wa.me/' + waNum + '?text=' + encodeURIComponent(lines.join('\n'));
 
@@ -349,6 +362,7 @@
                 fd.append('action', 'lahr_lead');
                 fd.append('_nonce', window.LAHR.leadNonce || '');
                 fd.append('origem_form', 'agendar');
+                fd.append('lahr_lang', LANG);
                 try {
                     fetch(window.LAHR.ajaxUrl, { method: 'POST', body: fd, keepalive: true, credentials: 'same-origin' });
                 } catch (err) {}
@@ -360,12 +374,12 @@
             // Replace form by success state
             var success = document.createElement('div');
             success.className = 'cn-form__success';
-            success.innerHTML = '<h3>Solicitação enviada</h3><p>Acabamos de abrir o WhatsApp com sua mensagem pronta. Caso não tenha aberto automaticamente, <a href="' + url + '" target="_blank" rel="noopener" style="color:var(--c-gold)">clique aqui para abrir</a>. Retorno em até 24h.</p>';
+            success.innerHTML = '<h3>' + T('Solicitação enviada') + '</h3><p>' + T('Acabamos de abrir o WhatsApp com sua mensagem pronta. Caso não tenha aberto automaticamente,') + ' <a href="' + url + '" target="_blank" rel="noopener" style="color:var(--c-gold)">' + T('clique aqui para abrir') + '</a>. ' + T('Retorno em até 24h.') + '</p>';
             agendForm.parentNode.replaceChild(success, agendForm);
 
             // Redirect to /obrigado after 6s if exists
             setTimeout(function () {
-                window.location.href = '/obrigado/';
+                window.location.href = (window.LAHR && window.LAHR.thanksUrl) || '/obrigado/';
             }, 6000);
         });
     }
@@ -432,30 +446,25 @@
         document.addEventListener('click', function (e) { if (waWidget.classList.contains('is-open') && !waWidget.contains(e.target)) close(); });
         var phone = waForm.querySelector('input[data-lm-mask="phone"]');
         if (phone) {
-            phone.addEventListener('input', function (e) {
-                var v = e.target.value.replace(/\D/g, '').slice(0, 11);
-                var f = v;
-                if (v.length > 0) f = '(' + v.slice(0, 2);
-                if (v.length >= 3) f += ') ' + v.slice(2, 7);
-                if (v.length >= 8) f += '-' + v.slice(7, 11);
-                e.target.value = f;
-            });
+            phone.addEventListener('input', maskPhone);
         }
         waForm.addEventListener('submit', function (e) {
             e.preventDefault();
             var nome      = waForm.querySelector('input[name="nome"]').value.trim();
             var telefone  = waForm.querySelector('input[name="telefone"]').value.trim();
-            var interesse = waForm.querySelector('select[name="interesse"]').value;
+            var interesseSel = waForm.querySelector('select[name="interesse"]');
+            var interesse = interesseSel.value;
+            var interesseTxt = optionText(interesseSel) || interesse;
             var valid = true;
-            [['nome', nome.length >= 3], ['telefone', telefone.replace(/\D/g, '').length >= 10]].forEach(function (pair) {
+            [['nome', nome.length >= 3], ['telefone', phoneOk(telefone)]].forEach(function (pair) {
                 var input = waForm.querySelector('[name="' + pair[0] + '"]');
                 if (!pair[1]) { input.classList.add('is-error'); valid = false; }
                 else input.classList.remove('is-error');
             });
             if (!valid) return;
-            var msg = 'Olá! Meu nome é ' + nome + '.';
-            msg += interesse ? ' Gostaria de saber sobre ' + interesse + '.' : ' Gostaria de agendar uma consulta com o Dr. Raphael.';
-            msg += '\nMeu WhatsApp: ' + telefone;
+            var msg = T('Olá! Meu nome é') + ' ' + nome + '.';
+            msg += interesse ? ' ' + T('Gostaria de saber sobre') + ' ' + interesseTxt + '.' : ' ' + T('Gostaria de agendar uma consulta com o Dr. Raphael.');
+            msg += '\n' + T('Meu WhatsApp:') + ' ' + telefone;
             var waNum = (window.LAHR && window.LAHR.waNumber) || '5547999701100';
             var url = 'https://wa.me/' + waNum + '?text=' + encodeURIComponent(msg);
             if (window.dataLayer) window.dataLayer.push({ event: 'generate_lead', lead_source: 'whatsapp_widget', area_interesse: interesse || 'nao_informado' });
@@ -467,6 +476,7 @@
                 fd.append('action', 'lahr_lead');
                 fd.append('_nonce', window.LAHR.leadNonce || '');
                 fd.append('origem_form', 'widget');
+                fd.append('lahr_lang', LANG);
                 fd.append('nome', nome);
                 fd.append('whatsapp', telefone);
                 fd.append('interesse', interesse);
@@ -484,7 +494,7 @@
                 var okBubble = document.createElement('div');
                 okBubble.className = 'lm-wa__bubble';
                 okBubble.setAttribute('role', 'status');
-                okBubble.innerHTML = '<p><strong>Dados enviados.</strong> Recebemos seu contato e retornamos pelo WhatsApp em até <strong>24h</strong>, de forma discreta.</p><span class="lm-wa__time">agora</span>';
+                okBubble.innerHTML = T('<p><strong>Dados enviados.</strong> Recebemos seu contato e retornamos pelo WhatsApp em até <strong>24h</strong>, de forma discreta.</p>') + '<span class="lm-wa__time">' + T('agora') + '</span>';
                 waBody.appendChild(okBubble);
             }
         });

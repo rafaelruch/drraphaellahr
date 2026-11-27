@@ -132,22 +132,22 @@ function lahr_get_banners() {
 	foreach ( $posts as $p ) {
 		$id   = $p->ID;
 		$ctas = array();
-		$c1   = get_post_meta( $id, 'cta1_texto', true );
+		$c1   = lahr_meta( $id, 'cta1_texto' );
 		if ( '' !== $c1 ) {
-			$ctas[] = array( 'texto' => $c1, 'url' => get_post_meta( $id, 'cta1_url', true ), 'estilo' => get_post_meta( $id, 'cta1_estilo', true ) ?: 'gold' );
+			$ctas[] = array( 'texto' => $c1, 'url' => lahr_meta( $id, 'cta1_url' ), 'estilo' => get_post_meta( $id, 'cta1_estilo', true ) ?: 'gold' );
 		}
-		$c2 = get_post_meta( $id, 'cta2_texto', true );
+		$c2 = lahr_meta( $id, 'cta2_texto' );
 		if ( '' !== $c2 ) {
-			$ctas[] = array( 'texto' => $c2, 'url' => get_post_meta( $id, 'cta2_url', true ), 'estilo' => get_post_meta( $id, 'cta2_estilo', true ) ?: 'ghost' );
+			$ctas[] = array( 'texto' => $c2, 'url' => lahr_meta( $id, 'cta2_url' ), 'estilo' => get_post_meta( $id, 'cta2_estilo', true ) ?: 'ghost' );
 		}
 		$slides[] = array(
 			'tipo_midia' => get_post_meta( $id, 'tipo_midia', true ) ?: 'foto',
 			'imagem'     => get_post_meta( $id, 'imagem', true ),
 			'video'      => get_post_meta( $id, 'video', true ),
 			'poster'     => get_post_meta( $id, 'poster', true ),
-			'eyebrow'    => get_post_meta( $id, 'eyebrow', true ),
-			'titulo'     => get_post_meta( $id, 'titulo', true ),
-			'lede'       => get_post_meta( $id, 'lede', true ),
+			'eyebrow'    => lahr_meta( $id, 'eyebrow' ),
+			'titulo'     => lahr_meta( $id, 'titulo' ),
+			'lede'       => lahr_meta( $id, 'lede' ),
 			'ctas'       => $ctas,
 		);
 	}

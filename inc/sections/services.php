@@ -27,7 +27,7 @@ function lahr_section_services( $sec ) {
 			$t    = isset( $s['titulo'] ) ? $s['titulo'] : '';
 			$desc = isset( $s['desc'] ) ? $s['desc'] : '';
 			$url  = isset( $s['url'] ) ? $s['url'] : '';
-			$cta  = isset( $s['cta_label'] ) && '' !== $s['cta_label'] ? $s['cta_label'] : 'Saiba mais';
+			$cta  = isset( $s['cta_label'] ) && '' !== $s['cta_label'] ? $s['cta_label'] : lahr__( 'Saiba mais' );
 			$html .= '<a href="' . esc_url( $url ) . '" class="cn-card" data-tilt>';
 			$html .= '<span class="cn-card__num">' . esc_html( $num ) . '</span>';
 			$html .= '<h3 class="cn-card__title">' . lahr_rich( $t ) . '</h3>';

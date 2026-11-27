@@ -107,6 +107,9 @@ function lahr_uazapi_format_lead( array $d ) {
 	if ( $email ) { $L[] = '✉️ *E-mail:* ' . $email; }
 	if ( $msg )   { $L[] = ''; $L[] = '📝 ' . $msg; }
 	$L[] = '';
+	if ( 'en' === ( $d['idioma'] ?? '' ) ) {
+		$L[] = '🇺🇸 *Idioma:* Inglês (veio pelo site em inglês — responder em inglês)';
+	}
 	$L[] = '🌐 _Via: ' . $via . '_';
 	return implode( "\n", $L );
 }

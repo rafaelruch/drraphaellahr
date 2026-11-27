@@ -167,6 +167,7 @@ add_filter(
 			'lahr_canal'     => 'Canal',
 			'lahr_form'      => 'Formulário',
 			'lahr_origem'    => 'Como encontrou',
+			'lahr_idioma'    => 'Idioma',
 			'date'         => 'Recebido em',
 		);
 	}
@@ -182,6 +183,8 @@ add_action(
 		);
 		if ( 'lahr_canal' === $col ) {
 			echo esc_html( lahr_lead_get_canal( $post_id ) );
+		} elseif ( 'lahr_idioma' === $col ) {
+			echo 'en' === get_post_meta( $post_id, 'idioma', true ) ? 'Inglês' : 'Português';
 		} elseif ( 'lahr_form' === $col ) {
 			echo esc_html( lahr_lead_form_label( get_post_meta( $post_id, 'origem_form', true ) ) );
 		} elseif ( isset( $map[ $col ] ) ) {
@@ -222,6 +225,7 @@ function lahr_handle_lead() {
 		'utm_term'     => sanitize_text_field( wp_unslash( $_POST['utm_term'] ?? '' ) ),
 		'utm_content'  => sanitize_text_field( wp_unslash( $_POST['utm_content'] ?? '' ) ),
 		'origem_form'  => sanitize_text_field( wp_unslash( $_POST['origem_form'] ?? 'agendar' ) ),
+		'idioma'       => 'en' === lahr_lang() ? 'en' : 'pt',
 	);
 
 	// Validação mínima.
@@ -281,6 +285,9 @@ function lahr_lead_send_emails( $data ) {
 		'nome' => 'Nome', 'whatsapp' => 'WhatsApp', 'email' => 'E-mail', 'cidade' => 'Cidade',
 		'interesse' => 'Interesse', 'origem' => 'Como encontrou', 'mensagem' => 'Mensagem',
 	);
+	if ( 'en' === ( $data['idioma'] ?? '' ) ) {
+		$rows .= '<tr><td style="padding:6px 12px;font-weight:bold;background:#f6f6f6">Idioma</td><td style="padding:6px 12px">Inglês (site em inglês)</td></tr>';
+	}
 	foreach ( $labels as $k => $lbl ) {
 		if ( ! empty( $data[ $k ] ) ) {
 			$rows .= '<tr><td style="padding:6px 12px;font-weight:bold;background:#f6f6f6">' . esc_html( $lbl ) . '</td><td style="padding:6px 12px">' . nl2br( esc_html( $data[ $k ] ) ) . '</td></tr>';
@@ -301,12 +308,12 @@ function lahr_lead_send_emails( $data ) {
 	// Auto-reply ao paciente.
 	if ( ! empty( $data['email'] ) ) {
 		$msg = '<div style="font-family:sans-serif;font-size:15px;line-height:1.6;color:#0d1624">'
-			. '<p>Olá, ' . esc_html( $data['nome'] ) . '.</p>'
-			. '<p>Recebemos sua solicitação de agendamento. Nossa equipe entrará em contato pelo WhatsApp informado em até <strong>24 horas</strong>, sempre de forma discreta e profissional.</p>'
-			. '<p>Atendimento particular, sigiloso e exclusivo do Dr. Raphael Lahr · CRM-SC 15336.</p>'
-			. '<p style="color:#888;font-size:12px">Este é um e-mail automático de confirmação. Não é necessário respondê-lo.</p>'
+			. '<p>' . esc_html( lahr__( 'Olá,' ) ) . ' ' . esc_html( $data['nome'] ) . '.</p>'
+			. '<p>' . wp_kses_post( lahr__( 'Recebemos sua solicitação de agendamento. Nossa equipe entrará em contato pelo WhatsApp informado em até <strong>24 horas</strong>, sempre de forma discreta e profissional.' ) ) . '</p>'
+			. '<p>' . esc_html( lahr__( 'Atendimento sigiloso e exclusivo do Dr. Raphael Lahr · CRM-SC 15336.' ) ) . '</p>'
+			. '<p style="color:#888;font-size:12px">' . esc_html( lahr__( 'Este é um e-mail automático de confirmação. Não é necessário respondê-lo.' ) ) . '</p>'
 			. '</div>';
-		wp_mail( $data['email'], 'Recebemos sua solicitação — Dr. Raphael Lahr', $msg, $headers );
+		wp_mail( $data['email'], lahr__( 'Recebemos sua solicitação — Dr. Raphael Lahr' ), $msg, $headers );
 	}
 }
 

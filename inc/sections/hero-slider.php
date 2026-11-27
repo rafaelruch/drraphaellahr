@@ -112,13 +112,13 @@ function lahr_section_hero_slider( $sec ) {
 		$svg_prev = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>';
 		$svg_next = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>';
 		$html .= '<div class="cn-hero__arrows" aria-hidden="false">';
-		$html .= '<button type="button" class="cn-hero__arrow cn-hero__arrow--prev" aria-label="Texto anterior" data-lahr-prev>' . $svg_prev . '</button>';
-		$html .= '<button type="button" class="cn-hero__arrow cn-hero__arrow--next" aria-label="Próximo texto" data-lahr-next>' . $svg_next . '</button>';
+		$html .= '<button type="button" class="cn-hero__arrow cn-hero__arrow--prev" aria-label="' . esc_attr( lahr__( 'Texto anterior' ) ) . '" data-lahr-prev>' . $svg_prev . '</button>';
+		$html .= '<button type="button" class="cn-hero__arrow cn-hero__arrow--next" aria-label="' . esc_attr( lahr__( 'Próximo texto' ) ) . '" data-lahr-next>' . $svg_next . '</button>';
 		$html .= '</div>';
-		$html .= '<div class="cn-hero__dots" role="tablist" aria-label="Textos">';
+		$html .= '<div class="cn-hero__dots" role="tablist" aria-label="' . esc_attr( lahr__( 'Textos' ) ) . '">';
 		for ( $i = 0; $i < $count; $i++ ) {
 			$sel = 0 === $i ? ' is-active" aria-selected="true' : '" aria-selected="false';
-			$html .= '<button type="button" class="cn-hero__dot' . $sel . '" role="tab" aria-label="Texto ' . ( $i + 1 ) . '" data-lahr-dot="' . $i . '"></button>';
+			$html .= '<button type="button" class="cn-hero__dot' . $sel . '" role="tab" aria-label="' . esc_attr( lahr__( 'Texto' ) ) . ' ' . ( $i + 1 ) . '" data-lahr-dot="' . $i . '"></button>';
 		}
 		$html .= '</div>';
 	}

@@ -22,7 +22,7 @@ function lahr_section_hero_page( $sec ) {
 		$html  = '<section class="cn-phero"><div class="cn-phero__glow"></div>';
 		$html .= '<div class="cn-phero__inner" style="grid-template-columns: 1fr; text-align: center; justify-items: center;">';
 		$html .= '<div style="max-width: 720px;">';
-		$html .= '<div class="cn-phero__crumbs" style="justify-content: center;"><a href="' . $home . '">Início</a><span>/</span><span>' . esc_html( $crumb ) . '</span></div>';
+		$html .= '<div class="cn-phero__crumbs" style="justify-content: center;"><a href="' . $home . '">' . esc_html( lahr__( 'Início' ) ) . '</a><span>/</span><span>' . esc_html( $crumb ) . '</span></div>';
 		$html .= '<h1 class="cn-phero__title" style="text-align: center;">' . lahr_rich( $titulo ) . '</h1>';
 		if ( '' !== $lede ) {
 			$html .= '<p class="cn-phero__lede" style="margin: var(--s-4) auto 0; text-align: center;">' . lahr_rich( $lede ) . '</p>';
@@ -35,7 +35,7 @@ function lahr_section_hero_page( $sec ) {
 		$html  = '<section class="cn-phero"><div class="cn-phero__glow"></div>';
 		$html .= '<div class="cn-phero__inner" style="grid-template-columns: 1fr;">';
 		$html .= '<div>';
-		$html .= '<div class="cn-phero__crumbs"><a href="' . $home . '">Início</a><span>/</span><span>' . esc_html( $crumb ) . '</span></div>';
+		$html .= '<div class="cn-phero__crumbs"><a href="' . $home . '">' . esc_html( lahr__( 'Início' ) ) . '</a><span>/</span><span>' . esc_html( $crumb ) . '</span></div>';
 		$html .= '<h1 class="cn-phero__title">' . lahr_rich( $titulo ) . '</h1>';
 		if ( '' !== $lede ) {
 			$html .= '<p class="cn-phero__lede" style="margin-top: var(--s-3);">' . lahr_rich( $lede ) . '</p>';
@@ -48,7 +48,7 @@ function lahr_section_hero_page( $sec ) {
 	$html  = '<section class="cn-phero"><div class="cn-phero__glow"></div>';
 	$html .= '<div class="cn-phero__inner">';
 	$html .= '<div>';
-	$html .= '<div class="cn-phero__crumbs"><a href="' . $home . '">Início</a><span>/</span><span>' . esc_html( $crumb ) . '</span></div>';
+	$html .= '<div class="cn-phero__crumbs"><a href="' . $home . '">' . esc_html( lahr__( 'Início' ) ) . '</a><span>/</span><span>' . esc_html( $crumb ) . '</span></div>';
 	$html .= '<h1 class="cn-phero__title">' . lahr_rich( $titulo ) . '</h1>';
 	$html .= '</div>';
 	$html .= '<div>';

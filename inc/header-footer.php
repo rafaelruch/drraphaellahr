@@ -51,21 +51,22 @@ function lahr_render_site_header() {
 	?>
 <header class="cn-header">
     <div class="cn-header__inner">
-        <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="cn-brand" aria-label="Dr. Raphael Lahr — Início">
+        <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="cn-brand" aria-label="<?php echo esc_attr( lahr__( 'Dr. Raphael Lahr — Início' ) ); ?>">
             <img src="<?php echo esc_url( $logo ); ?>" alt="Dr. Raphael Lahr" class="cn-brand__logo" width="260" height="70">
         </a>
-        <nav class="cn-nav" aria-label="Menu principal">
+        <nav class="cn-nav" aria-label="<?php echo esc_attr( lahr__( 'Menu principal' ) ); ?>">
 			<?php foreach ( $nav_main as $item ) : ?>
 				<?php $cta = ! empty( $item['is_cta'] ) ? ' class="cn-nav__cta"' : ''; ?>
             <a href="<?php echo esc_url( $item['url'] ); ?>"<?php echo $cta; // phpcs:ignore ?>><?php echo esc_html( $item['label'] ); ?></a>
 			<?php endforeach; ?>
         </nav>
+		<?php echo lahr_i18n_switcher_html(); // phpcs:ignore WordPress.Security.EscapeOutput ?>
         <button class="cn-mobile-toggle" aria-label="Menu" data-lm-mobile-open>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
         </button>
     </div>
     <div class="cn-mobile-menu" data-lm-mobile-menu>
-        <button class="cn-mobile-menu__close" aria-label="Fechar" data-lm-mobile-close>×</button>
+        <button class="cn-mobile-menu__close" aria-label="<?php echo esc_attr( lahr__( 'Fechar' ) ); ?>" data-lm-mobile-close>×</button>
 		<?php foreach ( $nav_mobile as $item ) : ?>
         <a href="<?php echo esc_url( $item['url'] ); ?>"><?php echo esc_html( $item['label'] ); ?></a>
 		<?php endforeach; ?>
@@ -104,6 +105,10 @@ function lahr_render_site_footer() {
 	$wa_status  = lahr_opt( 'wa_status', 'Atendimento agora' );
 	$wa_bolha   = lahr_opt( 'wa_bolha', '' );
 	$wa_int     = (array) lahr_opt( 'wa_interesses', array() );
+	// Valor enviado no lead fica em português (estatísticas consistentes); rótulo no idioma da página.
+	lahr_lang_push( 'pt' );
+	$wa_int_pt  = (array) lahr_opt( 'wa_interesses', array() );
+	lahr_lang_pop();
 	$wa_priv    = lahr_opt( 'wa_privacidade', 'Atendimento sigiloso. Não pedimos fotos nem documentos.' );
 	$bolha_lines = array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', (string) $wa_bolha ) ) );
 
@@ -147,12 +152,12 @@ function lahr_render_site_footer() {
     </div>
 </footer>
 
-<a class="lahr-ig-float" href="https://www.instagram.com/drraphaellahrurologista/" target="_blank" rel="noopener" aria-label="Instagram do Dr. Raphael Lahr">
+<a class="lahr-ig-float" href="https://www.instagram.com/drraphaellahrurologista/" target="_blank" rel="noopener" aria-label="<?php echo esc_attr( lahr__( 'Instagram do Dr. Raphael Lahr' ) ); ?>">
     <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M12 2.2c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.42.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.42C8.42 2.21 8.8 2.2 12 2.2Zm0 1.8c-3.15 0-3.52.01-4.76.07-.9.04-1.39.19-1.71.32-.43.17-.74.37-1.06.69-.32.32-.52.63-.69 1.06-.13.32-.28.81-.32 1.71-.06 1.24-.07 1.61-.07 4.76s.01 3.52.07 4.76c.04.9.19 1.39.32 1.71.17.43.37.74.69 1.06.32.32.63.52 1.06.69.32.13.81.28 1.71.32 1.24.06 1.61.07 4.76.07s3.52-.01 4.76-.07c.9-.04 1.39-.19 1.71-.32.43-.17.74-.37 1.06-.69.32-.32.52-.63.69-1.06.13-.32.28-.81.32-1.71.06-1.24.07-1.61.07-4.76s-.01-3.52-.07-4.76c-.04-.9-.19-1.39-.32-1.71-.17-.43-.37-.74-.69-1.06-.32-.32-.63-.52-1.06-.69-.32-.13-.81-.28-1.71-.32C15.52 4.01 15.15 4 12 4Zm0 3.06A4.94 4.94 0 1 1 7.06 12 4.94 4.94 0 0 1 12 7.06Zm0 1.8A3.14 3.14 0 1 0 15.14 12 3.14 3.14 0 0 0 12 8.86Zm5.14-3.24a1.15 1.15 0 1 1-1.15 1.15 1.15 1.15 0 0 1 1.15-1.15Z"/></svg>
 </a>
 
 <div class="lm-wa">
-    <button type="button" class="lm-wa__trigger" aria-label="Chat" aria-expanded="false" data-lm-wa-open>
+    <button type="button" class="lm-wa__trigger" aria-label="<?php echo esc_attr( lahr__( 'Conversar no WhatsApp' ) ); ?>" aria-expanded="false" data-lm-wa-open>
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.464 3.488"/></svg>
         <span class="lm-wa__badge">1</span>
     </button>
@@ -163,34 +168,35 @@ function lahr_render_site_footer() {
                 <p class="lm-wa__name"><?php echo esc_html( $wa_nome ); ?></p>
                 <p class="lm-wa__status"><span class="lm-wa__dot"></span> <?php echo esc_html( $wa_status ); ?></p>
             </div>
-            <button type="button" class="lm-wa__close" aria-label="Fechar" data-lm-wa-close>×</button>
+            <button type="button" class="lm-wa__close" aria-label="<?php echo esc_attr( lahr__( 'Fechar' ) ); ?>" data-lm-wa-close>×</button>
         </header>
         <div class="lm-wa__body">
             <div class="lm-wa__bubble">
 				<?php foreach ( $bolha_lines as $line ) : ?>
                 <p><?php echo lahr_rich( $line ); // phpcs:ignore WordPress.Security.EscapeOutput ?></p>
 				<?php endforeach; ?>
-                <span class="lm-wa__time">agora</span>
+                <span class="lm-wa__time"><?php echo esc_html( lahr__( 'agora' ) ); ?></span>
             </div>
             <form class="lm-wa__form" data-lm-wa-form novalidate>
                 <label class="lm-wa__field">
-                    <span>Seu nome</span>
+                    <span><?php echo esc_html( lahr__( 'Seu nome' ) ); ?></span>
                     <input type="text" name="nome" required minlength="3" autocomplete="name">
                 </label>
                 <label class="lm-wa__field">
                     <span>WhatsApp</span>
-                    <input type="tel" name="telefone" required inputmode="tel" autocomplete="tel" placeholder="(00) 00000-0000" data-lm-mask="phone">
+                    <input type="tel" name="telefone" required inputmode="tel" autocomplete="tel" placeholder="<?php echo esc_attr( lahr__( '(00) 00000-0000' ) ); ?>" data-lm-mask="phone">
                 </label>
                 <label class="lm-wa__field">
-                    <span>Sobre o que gostaria de conversar?</span>
+                    <span><?php echo esc_html( lahr__( 'Sobre o que gostaria de conversar?' ) ); ?></span>
                     <select name="interesse">
-                        <option value="">— Selecione (opcional) —</option>
-						<?php foreach ( $wa_int as $opt ) : ?>
-                        <option value="<?php echo esc_attr( $opt['valor'] ); ?>"><?php echo esc_html( $opt['valor'] ); ?></option>
+                        <option value=""><?php echo esc_html( lahr__( '— Selecione (opcional) —' ) ); ?></option>
+						<?php foreach ( $wa_int as $i => $opt ) : ?>
+							<?php $val = isset( $wa_int_pt[ $i ]['valor'] ) ? $wa_int_pt[ $i ]['valor'] : $opt['valor']; ?>
+                        <option value="<?php echo esc_attr( $val ); ?>"><?php echo esc_html( $opt['valor'] ); ?></option>
 						<?php endforeach; ?>
                     </select>
                 </label>
-                <button type="submit" class="lm-wa__submit">Conversar no WhatsApp →</button>
+                <button type="submit" class="lm-wa__submit"><?php echo esc_html( lahr__( 'Conversar no WhatsApp →' ) ); ?></button>
                 <p class="lm-wa__privacy"><?php echo esc_html( $wa_priv ); ?></p>
             </form>
         </div>

@@ -38,7 +38,9 @@ add_action( 'wp_enqueue_scripts', function () {
         'LAHR',
         array(
             'waNumber'  => preg_replace( '/\D/', '', (string) $wa_num ),
-            'thanksUrl' => home_url( '/obrigado/' ),
+            'thanksUrl' => 'en' === lahr_lang() ? lahr_i18n_localize_url( home_url( '/obrigado/' ) ) : home_url( '/obrigado/' ),
+            'lang'      => lahr_lang(),
+            'i18n'      => lahr_i18n_js_strings(),
             'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
             'leadNonce' => wp_create_nonce( 'lahr_lead' ),
         )
@@ -73,6 +75,8 @@ require_once get_theme_file_path( '/inc/google-reviews.php' );
  * Lahr — editabilidade por campos (ACF).
  */
 require_once get_theme_file_path( '/inc/helpers.php' );
+require_once get_theme_file_path( '/inc/i18n.php' );
+require_once get_theme_file_path( '/inc/i18n-admin.php' );
 require_once get_theme_file_path( '/inc/theme-updater.php' );
 require_once get_theme_file_path( '/inc/migrate-repeaters.php' );
 require_once get_theme_file_path( '/inc/acf-check.php' );

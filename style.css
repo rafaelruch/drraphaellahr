@@ -2640,3 +2640,41 @@ body.admin-bar .cn-header { top: 32px; }
     .lahr-ig-float { right: 16px; bottom: 82px; width: 54px; height: 54px; } /* 16 + 54 + 12 */
     .lahr-ig-float svg { width: 26px; height: 26px; }
 }
+
+/* ===== Seletor de idioma (PT · EN) ===== */
+.cn-lang {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: calc(var(--s-1) * -1);
+    font-family: var(--f-sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    line-height: 1;
+}
+.cn-lang__link {
+    color: var(--c-text-faint);
+    padding: 6px 0;
+    transition: color var(--speed-fast) ease;
+}
+.cn-lang__link:hover { color: var(--c-off-white); }
+.cn-lang__link.is-active { color: var(--c-gold); pointer-events: none; }
+.cn-lang__sep {
+    width: 1px;
+    height: 10px;
+    background: var(--c-line-strong);
+}
+.cn-lang, .cn-mobile-toggle { flex-shrink: 0; }
+@media (max-width: 1024px) {
+    .cn-lang { margin-left: auto; margin-right: 4px; }
+    .cn-brand { min-width: 0; flex-shrink: 1; }
+    .cn-brand__logo { max-width: 100%; }
+}
+.cn-reviews__lang-note {
+    margin: calc(var(--s-3) * -1) 0 var(--s-3);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--c-text-faint);
+    text-align: center;
+}
